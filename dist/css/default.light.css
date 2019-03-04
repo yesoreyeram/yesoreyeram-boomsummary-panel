@@ -1,0 +1,22 @@
+.boomsummary-panel .mini-split {
+  margin-right: 10px; }
+
+.boomsummary-panel .split {
+  margin-right: 20px; }
+
+.boomsummary-panel .boom-btn {
+  padding: 10px;
+  margin-right: 10px;
+  min-width: 200px;
+  text-transform: lowercase; }
+
+.boomsummary-panel h6.text-header {
+  padding: 0 0 10px 0;
+  font-weight: bolder; }
+  .boomsummary-panel h6.text-header i {
+    font-weight: 100; }
+
+.boomsummary-panel h6.text-header {
+  color: darkmagenta; }
+  .boomsummary-panel h6.text-header i {
+    color: darksalmon; }

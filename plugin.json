@@ -1,0 +1,25 @@
+{
+  "type": "panel",
+  "name": "Boom Summary",
+  "id": "yesoreyeram-boomsummary-panel",
+  "dataFormats": ["table"],
+  "info": {
+    "version": "0.0.1",
+    "description": "Boom Summary panel for Grafana",
+    "author": {
+      "name": "Sriramajeyam Sugumaran",
+      "url": "https://www.google.com/search?q=Sriramajeyam+Sugumaran"
+    },
+    "keywords": ["grafana", "plugin", "panel", "table", "multi stat"],
+    "links": [
+      {
+        "name": "Github",
+        "url": "https://github.com/yesoreyeram/yesoreyeram-boomsummary-panel"
+      }
+    ]
+  },
+  "dependencies": {
+    "grafanaVersion": "4.x.x",
+    "plugins": []
+  }
+}

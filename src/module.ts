@@ -7,7 +7,6 @@ import { IBoomSummaryCtl } from "./definitions/types";
 import { BoomSummaryStat } from "./app/BoomStat";
 import { buildMasterData } from "./app/DataHandler";
 import { config } from "./config";
-import { getOutputValue } from "./utils/AppUtils";
 
 loadPluginCss(config.cssThemes);
 
@@ -150,7 +149,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
 BoomSummaryCtl.prototype.render = function() {
   let output = ``;
   _.each(this.panel.stats, stat => {
-    let o = getOutputValue(this.masterdata, stat);
+    let o = stat.getOutputValue(this.masterdata);
     output += o;
   });
   this.elem.find("#boomsummary-panel").html(output);

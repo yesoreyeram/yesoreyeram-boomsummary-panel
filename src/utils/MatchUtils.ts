@@ -26,7 +26,9 @@ export let isMatch = function(
   switch (operator.trim()) {
     case "equals":
     case "is":
-      returnvalue = compare_value1 === original_value;
+      returnvalue =
+        +compare_value1 === +original_value ||
+        compare_value1 === original_value;
       break;
     case "notequals":
     case "isnotequals":

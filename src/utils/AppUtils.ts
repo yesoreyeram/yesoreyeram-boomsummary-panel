@@ -1,6 +1,4 @@
 import _ from "lodash";
-import { isMatch } from "./MatchUtils";
-import { BoomSummaryStat } from "../app/BoomStat";
 
 export let replaceTokens = function(value) {
   let FA_TOKEN_PREFIX = "${fa-";
@@ -93,55 +91,4 @@ export let getStatFromStatsGroup = function(statsGroup, statName) {
     .replace("${", "")
     .replace("}", "");
   return statsGroup[statName] || null;
-};
-
-export let buildOutput = function(statWidth, output, bgColor, textColor) {
-  return `<div style="width:${statWidth ||
-    "100"}%;float:left;background:${bgColor};color:${textColor};">
-    ${output}
-  </div>`;
-};
-
-export let getMatchingCondition = function(statsGroup, stat) {
-  let matching_condition = _.first(
-    stat.conditional_formats.filter(condition => {
-      let original_statName = (condition.field || "${value}")
-        .replace("${", "")
-        .replace("}", "");
-      let original_value = getStatFromStatsGroup(statsGroup, original_statName);
-      return isMatch(
-        original_value,
-        condition.operator,
-        condition.value,
-        condition.valu2
-      );
-    })
-  );
-  return matching_condition;
-};
-
-export let getOutputValue = function(masterdata, stat: BoomSummaryStat) {
-  if (masterdata.length === 0) {
-    return "<div style='text-align:center;'>No Data</div>";
-  } else {
-    let mystats: any = stat.getValues(masterdata);
-    let statsGroup = stat.getStats(mystats);
-    let matching_condition = getMatchingCondition(statsGroup, stat);
-    let bgColor =
-      matching_condition && matching_condition.bgColor
-        ? matching_condition.bgColor
-        : stat.bgColor;
-    let textColor =
-      matching_condition && matching_condition.textColor
-        ? matching_condition.textColor
-        : stat.textColor;
-    let template =
-      matching_condition && matching_condition.display_template
-        ? matching_condition.display_template
-        : stat.display_template;
-    let template_replaced1 = replaceTokens(
-      stat.getTemplateWithTokensReplaced(template, statsGroup)
-    );
-    return buildOutput(stat.statWidth, template_replaced1, bgColor, textColor);
-  }
 };

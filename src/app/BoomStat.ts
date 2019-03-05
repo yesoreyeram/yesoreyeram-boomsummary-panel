@@ -3,6 +3,7 @@ import { BoomSummaryFilter } from "./Filters/BoomFilter";
 import { BoomSummaryConditionalFormats } from "./Filters/BoomConditionalFormat";
 import { isMatch } from "../utils/MatchUtils";
 import { getFormattedOutput } from "./../utils/GrafanaUtils";
+import { getStatFromStatsGroup, replaceTokens } from "./../utils/AppUtils";
 import { IBoomSummaryStat } from "../definitions/types";
 import { config } from "../config";
 
@@ -27,6 +28,8 @@ export class BoomSummaryStat implements IBoomSummaryStat {
   public getStats;
   public getValues;
   public getTemplateWithTokensReplaced;
+  public getOutputValue;
+  public getMatchingCondition;
   constructor(options) {
     this.field = options.field || "Sample";
     this.title = options.title || this.field;
@@ -132,7 +135,7 @@ BoomSummaryStat.prototype.getValues = function(masterdata): any {
   return mystats;
 };
 
-BoomSummaryStat.prototype.getStats = function(mystats): any {
+let getStats = function(mystats): any {
   let statsgroup: any = {};
   statsgroup.count = mystats.length;
   statsgroup.uniquecount = _.uniq(mystats).length;
@@ -214,4 +217,53 @@ BoomSummaryStat.prototype.getTemplateWithTokensReplaced = function(
   output = output.replace(/\$\{[^}]?bgColor\}/gi, this.bgColor);
   output = output.replace(/\$\{[^}]?textColor\}/gi, this.textColor);
   return output;
+};
+
+let buildOutput = function(statWidth, output, bgColor, textColor) {
+  return `<div style="width:${statWidth ||
+    "100"}%;float:left;background:${bgColor};color:${textColor};">
+    ${output}
+  </div>`;
+};
+BoomSummaryStat.prototype.getMatchingCondition = function(statsGroup) {
+  let matching_condition = _.first(
+    this.conditional_formats.filter(condition => {
+      let original_statName = (condition.field || "${value}")
+        .replace("${", "")
+        .replace("}", "");
+      let original_value = getStatFromStatsGroup(statsGroup, original_statName);
+      return isMatch(
+        original_value,
+        condition.operator,
+        condition.value,
+        condition.value2
+      );
+    })
+  );
+  return matching_condition;
+};
+BoomSummaryStat.prototype.getOutputValue = function(masterdata) {
+  if (masterdata.length === 0) {
+    return "<div style='text-align:center;'>No Data</div>";
+  } else {
+    let mystats: any = this.getValues(masterdata);
+    let statsGroup = getStats(mystats);
+    let matching_condition = this.getMatchingCondition(statsGroup);
+    let bgColor =
+      matching_condition && matching_condition.bgColor
+        ? matching_condition.bgColor
+        : this.bgColor;
+    let textColor =
+      matching_condition && matching_condition.textColor
+        ? matching_condition.textColor
+        : this.textColor;
+    let template =
+      matching_condition && matching_condition.display_template
+        ? matching_condition.display_template
+        : this.display_template;
+    let template_replaced = replaceTokens(
+      this.getTemplateWithTokensReplaced(template, statsGroup)
+    );
+    return buildOutput(this.statWidth, template_replaced, bgColor, textColor);
+  }
 };

@@ -106,25 +106,28 @@ export let getStatFromStatsGroup = function(
 };
 
 export let buildMasterData = function(data) {
-  let distributed_masterdata: any = [];
+  let masterdata: any = [];
   _.each(data, d => {
     if (d.type === "table") {
       let refId = d.refId;
       _.each(d.rows, (row, i) => {
+        let group: any = [];
         _.each(row, (col, j) => {
           let mydata = {
             colname: d.columns[j].text,
-            group_id: refId + "###" + i,
             refId,
             rowid: i,
             value: col
           };
-          distributed_masterdata.push(mydata);
+          group.push(mydata);
         });
+        masterdata.push(group);
       });
+    } else {
+      console.error("ERROR: Only table format is currently supported");
     }
   });
-  return _.groupBy(distributed_masterdata, "group_id");
+  return masterdata;
 };
 
 export let buildOutput = function(statWidth, output, bgColor, textColor) {

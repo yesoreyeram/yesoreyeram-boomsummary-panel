@@ -78,11 +78,46 @@ Templates can contain token which will be automatically replaced at runtime.
 
 ## Filters
 
-TBD
+Optionally table rows can be filtered using the `Filters` option. If more than one filter specified, rows will be considered only if all the conditions satisified.
+
+Example:
+
+![image](https://user-images.githubusercontent.com/153843/53824458-e191f380-3f6b-11e9-9d90-66648d0a7de2.png)
+
+Above settings give count of machine in north region with 4 cores. 
+
 
 ## Conditional Formats
 
-TBD
+Optionally you can format the output using multiple conditions.
+
+![image](https://user-images.githubusercontent.com/153843/53824805-b4921080-3f6c-11e9-9707-cd60c69e6199.png)
+
+Above settings shows three different thresholds set. If none of the condition match, default settings (bgcolor, textcolor) will be applied
+
+![image](https://user-images.githubusercontent.com/153843/53824945-105c9980-3f6d-11e9-9458-56343508ada2.png)
+
+Text compare operators
+
+* `equals`
+* `notequals`
+* `contains`
+* `notcontains`
+* `startswith`
+* `endswith`
+* `in`
+
+Numeric compare operators
+
+* `==`
+* `!=`
+* `<`
+* `<=`
+* `>`
+* `>=`
+* `insiderange`
+* `outsiderange`
+
 
 
 ## Auto Generate Stats

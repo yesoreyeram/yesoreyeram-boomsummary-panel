@@ -83,7 +83,19 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
     this.panel.activeStatIndex = this.panel.stats.length - 1;
     this.render();
   }
-  public addStat(): void {
+  private includStat(statOptions): void {
+    this.panel.stats.push(
+      new BoomSummaryStat({
+        bgColor: statOptions.bgColor || "green",
+        display_template: statOptions.display_template || undefined,
+        field: statOptions.field,
+        textColor: statOptions.textColor || "white"
+      })
+    );
+    this.panel.activeStatIndex = this.panel.stats.length - 1;
+    this.render();
+  }
+  public addStat(templateType): void {
     let field = "Sample";
     if (this.masterdata && this.masterdata.length > 0) {
       if (
@@ -93,15 +105,21 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
         field = this.masterdata[0][this.panel.stats.length].colname;
       }
     }
-    this.panel.stats.push(
-      new BoomSummaryStat({
-        bgColor: "green",
-        field,
-        textColor: "white"
-      })
-    );
-    this.panel.activeStatIndex = this.panel.stats.length - 1;
-    this.render();
+    let display_template;
+    if (templateType && templateType.toUpperCase() === "JUMBO") {
+      display_template = `<div style="width:100%;float:left;text-align:center;border:1px solid black;border-width:1px 1px 0px 1px">
+      <br/>
+      <h5>\${title}</h5>
+      <h1>\${default}</h1>
+      <br/>
+</div>`;
+    }
+    this.includStat({
+      bgColor: "green",
+      display_template,
+      field,
+      textColor: "white"
+    });
   }
   public removeStat(index: number): void {
     this.panel.stats.splice(index, 1);

@@ -64,6 +64,25 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
     this.attrs = attrs;
     this.ctrl = ctrl;
   }
+  public autoGenerateStats(): void {
+    if (this.panel.stats.length === 0) {
+      if (this.masterdata && this.masterdata.length > 0) {
+        _.each(this.masterdata[0], data => {
+          if (data.colname) {
+            this.panel.stats.push(
+              new BoomSummaryStat({
+                bgColor: "green",
+                field: data.colname,
+                textColor: "white"
+              })
+            );
+          }
+        });
+      }
+    }
+    this.panel.activeStatIndex = this.panel.stats.length - 1;
+    this.render();
+  }
   public addStat(): void {
     let field = "Sample";
     if (this.masterdata && this.masterdata.length > 0) {

@@ -21,6 +21,9 @@
                     </li>
                 </ul>
             </aside>
+            <div class="edit-tab-content" ng-if="ctrl.panel.stats.length === 0" style="text-align:center;padding-top:30px;">
+                <a class="btn btn-success boom-btn" ng-click="ctrl.autoGenerateStats();">Auto Generate Stats</a>
+            </div>
             <div class="edit-tab-content" ng-repeat="stat in ctrl.panel.stats track by $index" ng-if="ctrl.panel.activeStatIndex === $index">
                 <div class="editor-row">
                     <div class="section gf-form-group">

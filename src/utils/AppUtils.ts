@@ -30,6 +30,33 @@ export let replaceTokens = function(value) {
           a.split(FA_DELIMITER).length > 2
             ? +mytoken.split(IMG_DELIMITER)[2]
             : 1;
+        if (a.split(FA_DELIMITER).length > 4) {
+          let operator = mytoken.split(IMG_DELIMITER)[3];
+          let _value = +mytoken.split(IMG_DELIMITER)[4];
+          switch (operator) {
+            case "plus":
+              repeatCount = repeatCount + _value;
+              break;
+            case "minus":
+              repeatCount = repeatCount - _value;
+              break;
+            case "multiply":
+              repeatCount = Math.round(repeatCount * _value);
+              break;
+            case "divideby":
+              repeatCount = Math.round(repeatCount / _value);
+              break;
+            case "min":
+              repeatCount = Math.round(_.min([repeatCount, _value]));
+              break;
+            case "max":
+              repeatCount = Math.round(_.max([repeatCount, _value]));
+              break;
+            case "mean":
+              repeatCount = Math.round(_.mean([repeatCount, _value]));
+              break;
+          }
+        }
         a = `<i class="fa ${icon}" ${color}></i> `.repeat(repeatCount);
       } else if (
         a.startsWith(IMG_TOKEN_PREFIX) &&

@@ -74,3 +74,7 @@ TBD
 If no existing stats are available, **Auto Generate all stats** button will be visible. If clicked, panel will automatically construct stats from the metric results. If more than one query is available, only first query's results will be considered.
 
 If metrics tab doesn't result any data or have no queries/results, **Auto Generate all stats** will not work. You may need to refresh metrics.
+
+## Font Awesome Icons
+
+TBD

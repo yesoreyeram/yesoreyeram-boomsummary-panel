@@ -236,9 +236,7 @@ export let getOutputValue = function(masterdata, stat) {
     let output = template;
     output = output.replace(
       /\$\{[^}]?default\}/gi,
-      isNaN(statsGroup.first)
-        ? statsGroup.first
-        : getFormattedOutput(statsGroup.first, stat.format, stat.decimals)
+      stat.defaultStat || "${first}"
     );
     output = output.replace(
       /\$\{[^}]?value\}/gi,

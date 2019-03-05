@@ -20,6 +20,10 @@ loadPluginCss({
 class BoomSummaryCtl extends MetricsPanelCtrl {
   public static templateUrl = "partials/module.html";
   public unitFormats = kbn.getUnitFormats();
+  public statTypes = config.statTypes;
+  public compareOperators = config.compareOperators;
+  public decimalValues = config.decimalValues;
+  public activeStatIndex = 0;
   public ctrl: any;
   public elem: any;
   public attrs: any;
@@ -28,9 +32,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
 
   constructor($scope, $injector) {
     super($scope, $injector);
-    _.defaults(this.panel, {
-      activeStatIndex: 0
-    });
+    _.defaults(this.panel, {});
     this.panel.stats = this.panel.stats || [];
     this.updatePrototypes();
     this.events.on("data-received", this.onDataReceived.bind(this));
@@ -80,7 +82,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
         });
       }
     }
-    this.panel.activeStatIndex = this.panel.stats.length - 1;
+    this.activeStatIndex = this.panel.stats.length - 1;
     this.render();
   }
   private includStat(statOptions): void {
@@ -92,7 +94,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
         textColor: statOptions.textColor || "white"
       })
     );
-    this.panel.activeStatIndex = this.panel.stats.length - 1;
+    this.activeStatIndex = this.panel.stats.length - 1;
     this.render();
   }
   public addStat(templateType): void {
@@ -123,7 +125,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
   }
   public removeStat(index: number): void {
     this.panel.stats.splice(index, 1);
-    this.panel.activeStatIndex =
+    this.activeStatIndex =
       this.panel.stats && this.panel.stats.length > 0
         ? this.panel.stats.length - 1
         : -1;
@@ -134,12 +136,12 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
     if (direction === "UP") {
       this.panel.stats[Number(index)] = this.panel.stats[Number(index) - 1];
       this.panel.stats[Number(index) - 1] = tempElement;
-      this.panel.activeStatIndex = Number(index) - 1;
+      this.activeStatIndex = Number(index) - 1;
     }
     if (direction === "DOWN") {
       this.panel.stats[Number(index)] = this.panel.stats[Number(index) + 1];
       this.panel.stats[Number(index) + 1] = tempElement;
-      this.panel.activeStatIndex = Number(index) + 1;
+      this.activeStatIndex = Number(index) + 1;
     }
     this.render();
   }

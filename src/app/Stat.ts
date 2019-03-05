@@ -4,6 +4,7 @@ import { BoomSummaryConditionalFormats } from "./ConditionalFormat";
 export class BoomSummaryStat {
   public field: string;
   public title: string;
+  public defaultStat: string;
   public display_template: string;
   public statWidth: string;
   public bgColor: string;
@@ -21,6 +22,7 @@ export class BoomSummaryStat {
   constructor(options) {
     this.field = options.field || "Sample";
     this.title = options.title || this.field;
+    this.defaultStat = options.defaultStat || "${first}";
     this.display_template =
       options.display_template ||
       `<div style="width:100%;float:left;border:1px solid black;border-width:1px 1px 0px 1px">
@@ -50,7 +52,9 @@ BoomSummaryStat.prototype.removeFilter = function(index: Number): void {
 };
 
 BoomSummaryStat.prototype.addConditonalFormat = function(): void {
-  let new_conditional_formatter = new BoomSummaryConditionalFormats({});
+  let new_conditional_formatter = new BoomSummaryConditionalFormats({
+    field: this.defaultStat || "${first}"
+  });
   this.conditional_formats = this.conditional_formats || [];
   this.conditional_formats.push(new_conditional_formatter);
 };

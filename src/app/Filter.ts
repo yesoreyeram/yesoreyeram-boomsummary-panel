@@ -14,39 +14,39 @@ export class BoomSummaryFilter {
   }
 }
 BoomSummaryFilter.prototype.CanShowValue2 = function() {
-  if (this.operator === "between") {
+  if (this.operator.replace("ignorecase","").trim() === "between") {
     return true;
-  } else if (this.operator === "inside range") {
+  } else if (this.operator.replace("ignorecase","").trim() === "insiderange") {
     return true;
-  } else if (this.operator === "outside range") {
+  } else if (this.operator.replace("ignorecase","").trim() === "outsiderange") {
     return true;
-  } else if (this.operator === "in") {
+  } else if (this.operator.replace("ignorecase","").trim() === "in") {
     return true;
   } else {
     return false;
   }
 };
 BoomSummaryFilter.prototype.GetValue2Helper = function() {
-  if (this.operator === "between") {
+  if (this.operator.replace("ignorecase","").trim() === "between") {
     return "to";
-  } else if (this.operator === "inside range") {
+  } else if (this.operator.replace("ignorecase","").trim() === "insiderange") {
     return "to";
-  } else if (this.operator === "outside range") {
+  } else if (this.operator.replace("ignorecase","").trim() === "outsiderange") {
     return "to";
-  } else if (this.operator === "in") {
+  } else if (this.operator.replace("ignorecase","").trim() === "in") {
     return "seperator";
   } else {
     return "";
   }
 };
 BoomSummaryFilter.prototype.GetValue1Helper = function() {
-  if (this.operator === "between") {
+  if (this.operator.replace("ignorecase","").trim() === "between") {
     return "From";
-  } else if (this.operator === "inside range") {
+  } else if (this.operator.replace("ignorecase","").trim() === "insiderange") {
     return "From";
-  } else if (this.operator === "outside range") {
+  } else if (this.operator.replace("ignorecase","").trim() === "outsiderange") {
     return "From";
-  } else if (this.operator === "in") {
+  } else if (this.operator.replace("ignorecase","").trim() === "in") {
     return "Values";
   } else {
     return "Value";

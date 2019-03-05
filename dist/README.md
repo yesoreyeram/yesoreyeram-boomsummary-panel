@@ -75,7 +75,6 @@ Templates can contain token which will be automatically replaced at runtime.
 | `${field}`            | Column Name of the stat                                   | 
 | `${bgColor}`          | BG Color value of the stat                                | 
 | `${textColor}`        | Text Color value of the stat                              |
-| ----------------------|-----------------------------------------------------------| 
 
 ## Filters
 
@@ -96,4 +95,26 @@ If metrics tab doesn't result any data or have no queries/results, **Auto Genera
 
 ## Font Awesome Icons
 
-TBD
+Output templates can have font awesome icons. Refer [here](https://github.com/yesoreyeram/yesoreyeram-boomsummary-panel/issues/1#issuecomment-469771047)
+
+Samples : ` ${fa-arrow-up} ` , ` ${fa-arrow-down,red} `, ` ${fa-circle,yellow,3,plus,2} ` , ` ${fa-circle,yellow,${uniquecount_raw},multiply,1.5} `, ` ${fa-circle,yellow,${uniquecount_raw},min,${sum_raw}}  `
+
+Usage info : ` ${fa-circle,yellow,5,multiply,1.25} ` will repeat yellow circle icon 6 times i.e., ( Math.round(5*1.25) )
+
+**TOKEN 0** : Icon Name Refer [Font Awesome official page](https://fontawesome.com/icons)
+
+**TOKEN 1** : Color of the icon
+
+**TOKEN 2** : Repeat count
+
+**TOKEN 3** : Repeat count operator. Needs token 2 and 4. Valid operators are `plus`, `minus`, `multiply`, `divideby`, `min`, `max` and `mean`
+
+**TOKEN 4** : Repat count value 2.
+
+**Note:**
+
+* Font awesome token needs to surrounded by whitespace.
+* IMPORTANT : Use **raw values** when repeating icons using calculations.
+
+![image](https://user-images.githubusercontent.com/153843/53824039-f28e3500-3f6a-11e9-9bc8-e7fc51f533d1.png)
+

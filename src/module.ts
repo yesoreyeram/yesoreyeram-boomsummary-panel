@@ -76,19 +76,15 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
 
   public autoGenerateStats(): void {
     if (this.panel.stats.length === 0) {
-      if (this.masterdata && this.masterdata.length > 0) {
-        _.each(this.masterdata[0], data => {
-          if (data.colname) {
-            this.panel.stats.push(
-              new BoomSummaryStat({
-                bgColor: "green",
-                field: data.colname,
-                textColor: "white"
-              })
-            );
-          }
-        });
-      }
+      _.each(this.colnames, colname => {
+        this.panel.stats.push(
+          new BoomSummaryStat({
+            bgColor: "green",
+            field: colname,
+            textColor: "white"
+          })
+        );
+      });
     }
     this.activeStatIndex = this.panel.stats.length - 1;
     this.render();

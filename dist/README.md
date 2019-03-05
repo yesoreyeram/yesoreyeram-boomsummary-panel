@@ -22,7 +22,13 @@ Boom Summary Panel for Grafana.
 
 ## How to
 
-* Add Stat using the `+ Add` button in the stats tab of editor or click **Auto Generate Stats** button to automatically fill stats.
+**Quick route:**
+
+* Click **Auto Generate Stats** button to automatically fill stats.
+
+**Manual:**
+
+* Add Stat using the `+ Add` button in the stats tab of editor
 * Enter the columnn name from the table in `Field` textbox
 * Optinally Enter the output format in `Output template` field. In the template you can type the name of the stats you want to see using tokens. Valid tokens and stats given below.  Output template can have HTML. By default `${default}` stat will be selected which is equivalent to table's first rows selected `${field}`.
 * Optionally apply units and decimal values
@@ -82,9 +88,11 @@ TBD
 
 ## Auto Generate Stats
 
-If no existing stats are available, **Auto Generate all stats** button will be visible. If clicked, panel will automatically construct stats from the metric results. If more than one query is available, only first query's results will be considered.
+If no existing stats are available, **Auto Generate all stats** button will be visible. If clicked, panel will automatically construct stats from the metric results.
 
 If metrics tab doesn't result any data or have no queries/results, **Auto Generate all stats** will not work. You may need to refresh metrics.
+
+![image](https://user-images.githubusercontent.com/153843/53822354-7ba36d00-3f67-11e9-93b5-ab91b4cabc8d.png)
 
 ## Font Awesome Icons
 

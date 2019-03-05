@@ -86,19 +86,6 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
     this.render();
   }
 
-  private includeStat(statOptions): void {
-    this.panel.stats.push(
-      new BoomSummaryStat({
-        bgColor: statOptions.bgColor || "green",
-        display_template: statOptions.display_template || undefined,
-        field: statOptions.field,
-        textColor: statOptions.textColor || "white"
-      })
-    );
-    this.activeStatIndex = this.panel.stats.length - 1;
-    this.render();
-  }
-
   public addStat(templateType): void {
     let field = "Sample";
     if (this.masterdata && this.masterdata.length > 0) {
@@ -113,12 +100,16 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
     if (templateType && templateType.toUpperCase() === "JUMBO") {
       display_template = config.templates.default_jumbo;
     }
-    this.includeStat({
-      bgColor: "green",
-      display_template,
-      field,
-      textColor: "white"
-    });
+    this.panel.stats.push(
+      new BoomSummaryStat({
+        bgColor: "green",
+        display_template: display_template || undefined,
+        field: field,
+        textColor: "white"
+      })
+    );
+    this.activeStatIndex = this.panel.stats.length - 1;
+    this.render();
   }
 
   public removeStat(index: number): void {

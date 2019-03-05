@@ -3,69 +3,70 @@
 import _ from "lodash";
 import { MetricsPanelCtrl, loadPluginCss } from "app/plugins/sdk";
 import kbn from "app/core/utils/kbn";
+import { IBoomSummaryCtl } from "./definitions/types";
+import { BoomSummaryStat } from "./app/BoomStat";
+import { buildMasterData } from "./app/DataHandler";
 import { config } from "./config";
-import { BoomSummaryStat } from "./app/Stat";
-import {
-  getOutputValue,
-  buildMasterData,
-  buildOutput,
-  replaceTokens
-} from "./utils/AppUtils";
+import { getOutputValue, buildOutput, replaceTokens } from "./utils/AppUtils";
 
-loadPluginCss({
-  dark: `plugins/${config.plugin_id}/css/default.dark.css`,
-  light: `plugins/${config.plugin_id}/css/default.light.css`
-});
+loadPluginCss(config.cssThemes);
 
-class BoomSummaryCtl extends MetricsPanelCtrl {
-  public static templateUrl = "partials/module.html";
+class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
+  public static templateUrl = config.default_templateURL;
+  public ctrl: any;
+  public elem: any;
+  public attrs: any;
+  public activeStatIndex = 0;
+  public masterdata: any = [];
   public unitFormats = kbn.getUnitFormats();
   public statTypes = config.statTypes;
   public compareOperators = config.compareOperators;
   public decimalValues = config.decimalValues;
-  public activeStatIndex = 0;
-  public ctrl: any;
-  public elem: any;
-  public attrs: any;
-  public masterdata: any = [];
-  public compute;
 
   constructor($scope, $injector) {
     super($scope, $injector);
     _.defaults(this.panel, {});
     this.panel.stats = this.panel.stats || [];
     this.updatePrototypes();
-    this.events.on("data-received", this.onDataReceived.bind(this));
-    this.events.on("init-edit-mode", this.onInitEditMode.bind(this));
+    this.events.on(
+      config.grafana_events.dataReceived,
+      this.onDataReceived.bind(this)
+    );
+    this.events.on(
+      config.grafana_events.initEditMode,
+      this.onInitEditMode.bind(this)
+    );
   }
+
   private updatePrototypes(): void {
     this.panel.stats.map(stat => {
       Object.setPrototypeOf(stat, BoomSummaryStat.prototype);
       return stat;
     });
   }
+
   private onDataReceived(data: any): void {
-    this.compute(data);
+    this.masterdata = buildMasterData(data);
     this.render();
   }
+
   private onInitEditMode(): void {
-    this.addEditorTab(
-      "Stats",
-      `public/plugins/${config.plugin_id}/partials/stats.html`,
-      2
-    );
-    this.addEditorTab(
-      "Panel Options",
-      `public/plugins/${config.plugin_id}/partials/options.html`,
-      3
-    );
+    _.each(config.editorTabs, editorTab => {
+      this.addEditorTab(
+        editorTab.title,
+        editorTab.templatePath,
+        editorTab.position
+      );
+    });
   }
+
   public link(scope: any, elem: any, attrs: any, ctrl: any): void {
     this.scope = scope;
     this.elem = elem;
     this.attrs = attrs;
     this.ctrl = ctrl;
   }
+
   public autoGenerateStats(): void {
     if (this.panel.stats.length === 0) {
       if (this.masterdata && this.masterdata.length > 0) {
@@ -85,7 +86,8 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
     this.activeStatIndex = this.panel.stats.length - 1;
     this.render();
   }
-  private includStat(statOptions): void {
+
+  private includeStat(statOptions): void {
     this.panel.stats.push(
       new BoomSummaryStat({
         bgColor: statOptions.bgColor || "green",
@@ -97,6 +99,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
     this.activeStatIndex = this.panel.stats.length - 1;
     this.render();
   }
+
   public addStat(templateType): void {
     let field = "Sample";
     if (this.masterdata && this.masterdata.length > 0) {
@@ -109,20 +112,16 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
     }
     let display_template;
     if (templateType && templateType.toUpperCase() === "JUMBO") {
-      display_template = `<div style="width:100%;float:left;text-align:center;border:1px solid black;border-width:1px 1px 0px 1px">
-      <br/>
-      <h5>\${title}</h5>
-      <h1>\${default}</h1>
-      <br/>
-</div>`;
+      display_template = config.templates.default_jumbo;
     }
-    this.includStat({
+    this.includeStat({
       bgColor: "green",
       display_template,
       field,
       textColor: "white"
     });
   }
+
   public removeStat(index: number): void {
     this.panel.stats.splice(index, 1);
     this.activeStatIndex =
@@ -131,6 +130,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
         : -1;
     this.render();
   }
+
   public moveStat(direction: string, index: Number): void {
     let tempElement = this.panel.stats[Number(index)];
     if (direction === "UP") {
@@ -146,10 +146,6 @@ class BoomSummaryCtl extends MetricsPanelCtrl {
     this.render();
   }
 }
-
-BoomSummaryCtl.prototype.compute = function(data) {
-  this.masterdata = buildMasterData(data);
-};
 
 BoomSummaryCtl.prototype.render = function() {
   let output = ``;

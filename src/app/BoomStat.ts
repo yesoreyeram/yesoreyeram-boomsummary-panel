@@ -1,7 +1,11 @@
-import { BoomSummaryFilter } from "./Filter";
-import { BoomSummaryConditionalFormats } from "./ConditionalFormat";
+import _ from "lodash";
+import { BoomSummaryFilter } from "./Filters/BoomFilter";
+import { BoomSummaryConditionalFormats } from "./Filters/BoomConditionalFormat";
+import { isMatch } from "../utils/MatchUtils";
+import { IBoomSummaryStat } from "../definitions/types";
+import { config } from "../config";
 
-export class BoomSummaryStat {
+export class BoomSummaryStat implements IBoomSummaryStat {
   public field: string;
   public title: string;
   public defaultStat: string;
@@ -19,16 +23,15 @@ export class BoomSummaryStat {
   public removeConditionalFormat;
   public moveConditionalFormat;
   public setUnitFormat;
+  public getStats;
+  public getValues;
   constructor(options) {
     this.field = options.field || "Sample";
     this.title = options.title || this.field;
     this.defaultStat = options.defaultStat || "${first}";
     this.display_template =
       options.display_template ||
-      `<div style="width:100%;float:left;border:1px solid black;border-width:1px 1px 0px 1px">
-      <div style="width:50%;float:left;padding:10px;">\${title}</div>
-      <div style="width:50%;float:left;padding:10px;">\${default}</div>
-</div>`;
+      config.templates.default_normal;
     this.statWidth = options.statWidth || "100";
     this.bgColor = options.bgColor || "";
     this.textColor = options.textColor || "";
@@ -40,7 +43,10 @@ export class BoomSummaryStat {
 }
 
 BoomSummaryStat.prototype.addFilter = function(): void {
-  let newfilter = new BoomSummaryFilter({});
+  let newfilter = new BoomSummaryFilter({
+    field : this.field || "Sample",
+    operator : "equals"
+  });
   this.filters = this.filters || [];
   this.filters.push(newfilter);
 };
@@ -53,7 +59,8 @@ BoomSummaryStat.prototype.removeFilter = function(index: Number): void {
 
 BoomSummaryStat.prototype.addConditonalFormat = function(): void {
   let new_conditional_formatter = new BoomSummaryConditionalFormats({
-    field: this.defaultStat || "${first}"
+    field: this.defaultStat || "${first}",
+    operator : "equals"
   });
   this.conditional_formats = this.conditional_formats || [];
   this.conditional_formats.push(new_conditional_formatter);
@@ -88,4 +95,50 @@ BoomSummaryStat.prototype.moveConditionalFormat = function(
 
 BoomSummaryStat.prototype.setUnitFormat = function(format: any): void {
   this.format = format && format.value ? format.value : "none";
+};
+
+let didSatisfyFilters = function(group, filters) {
+  if (filters && filters.length > 0) {
+    let matches = 0;
+    _.each(filters, filter => {
+      let matching_field = _.filter(group, g => g.colname === filter.field);
+      if (matching_field && matching_field.length > 0) {
+        matches +=
+          isMatch(
+            matching_field[0].value,
+            filter.operator,
+            filter.value,
+            filter.value2
+          ) === true
+            ? 1
+            : 0;
+      }
+    });
+    return matches === filters.length;
+  } else {
+    return true;
+  }
+};
+
+BoomSummaryStat.prototype.getValues = function(masterdata): any {
+  let mystats: any = [];
+  _.each(masterdata, group => {
+    let matching_field = _.filter(group, g => g.colname === this.field);
+    if (matching_field.length > 0 && didSatisfyFilters(group, this.filters)) {
+      mystats.push(_.first(matching_field).value);
+    }
+  });
+  return mystats;
+};
+
+BoomSummaryStat.prototype.getStats = function(mystats): any {
+  let statsgroup: any = {};
+  statsgroup.count = mystats.length;
+  statsgroup.uniquecount = _.uniq(mystats).length;
+  statsgroup.sum = _.sum(mystats.map(s => +s));
+  statsgroup.mean = _.mean(mystats.map(s => +s));
+  statsgroup.min = _.min(mystats.map(s => +s));
+  statsgroup.max = _.max(mystats.map(s => +s));
+  statsgroup.first = _.first(mystats);
+  return statsgroup;
 };

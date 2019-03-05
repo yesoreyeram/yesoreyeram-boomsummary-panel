@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { getFormattedOutput } from "./GrafanaUtils";
 import { isMatch } from "./MatchUtils";
+import { BoomSummaryStat } from "../app/BoomStat";
 
 export let replaceTokens = function(value) {
   let FA_TOKEN_PREFIX = "${fa-";
@@ -132,82 +133,11 @@ export let getStatFromStatsGroup = function(
   return "Not a valid stat";
 };
 
-export let buildMasterData = function(data) {
-  let masterdata: any = [];
-  _.each(data, d => {
-    if (d.type === "table") {
-      let refId = d.refId;
-      _.each(d.rows, (row, i) => {
-        let group: any = [];
-        _.each(row, (col, j) => {
-          let mydata = {
-            colname: d.columns[j].text,
-            refId,
-            rowid: i,
-            value: col
-          };
-          group.push(mydata);
-        });
-        masterdata.push(group);
-      });
-    } else {
-      console.error("ERROR: Only table format is currently supported");
-    }
-  });
-  return masterdata;
-};
-
 export let buildOutput = function(statWidth, output, bgColor, textColor) {
   return `<div style="width:${statWidth ||
     "100"}%;float:left;background:${bgColor};color:${textColor};">
     ${output}
   </div>`;
-};
-
-export let didSatisfyFilters = function(group, filters) {
-  if (filters && filters.length > 0) {
-    let matches = 0;
-    _.each(filters, filter => {
-      let matching_field = _.filter(group, g => g.colname === filter.field);
-      if (matching_field && matching_field.length > 0) {
-        matches +=
-          isMatch(
-            matching_field[0].value,
-            filter.operator,
-            filter.value,
-            filter.value2
-          ) === true
-            ? 1
-            : 0;
-      }
-    });
-    return matches === filters.length;
-  } else {
-    return true;
-  }
-};
-
-export let getStatsGroup = function(mystats) {
-  let statsgroup: any = {};
-  statsgroup.count = mystats.length;
-  statsgroup.uniquecount = _.uniq(mystats).length;
-  statsgroup.sum = _.sum(mystats.map(s => +s));
-  statsgroup.mean = _.mean(mystats.map(s => +s));
-  statsgroup.min = _.min(mystats.map(s => +s));
-  statsgroup.max = _.max(mystats.map(s => +s));
-  statsgroup.first = _.first(mystats);
-  return statsgroup;
-};
-
-export let getValues = function(masterdata, stat) {
-  let mystats: any = [];
-  _.each(masterdata, group => {
-    let matching_field = _.filter(group, g => g.colname === stat.field);
-    if (matching_field.length > 0 && didSatisfyFilters(group, stat.filters)) {
-      mystats.push(_.first(matching_field).value);
-    }
-  });
-  return mystats;
 };
 
 export let getMatchingCondition = function(statsGroup, stat) {
@@ -228,7 +158,7 @@ export let getMatchingCondition = function(statsGroup, stat) {
   return matching_condition;
 };
 
-export let getOutputValue = function(masterdata, stat) {
+export let getOutputValue = function(masterdata, stat: BoomSummaryStat) {
   if (masterdata.length === 0) {
     return {
       bgColor: "",
@@ -236,8 +166,8 @@ export let getOutputValue = function(masterdata, stat) {
       textColor: "red"
     };
   } else {
-    let mystats: any = getValues(masterdata, stat);
-    let statsGroup = getStatsGroup(mystats);
+    let mystats: any = stat.getValues(masterdata);
+    let statsGroup = stat.getStats(mystats);
     let matching_condition = getMatchingCondition(statsGroup, stat);
     let bgColor = stat.bgColor;
     let textColor = stat.textColor;

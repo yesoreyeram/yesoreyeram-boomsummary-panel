@@ -15,14 +15,24 @@
                     </li>
 
                     <li>
-                        <a class="pointer" ng-click="ctrl.addStat()">
+                        <a class="pointer" ng-click="ctrl.addStat()" ng-if="ctrl.masterdata.length > 0 && ctrl.panel.stats.length > 0">
                             <i class="fa fa-plus"></i>&nbsp;Add
                         </a>
                     </li>
                 </ul>
             </aside>
-            <div class="edit-tab-content" ng-if="ctrl.panel.stats.length === 0" style="text-align:center;padding-top:30px;">
-                <a class="btn btn-success boom-btn" ng-click="ctrl.autoGenerateStats();">Auto Generate Stats</a>
+            <div class="edit-tab-content" ng-if="ctrl.panel.stats.length === 0 && ctrl.masterdata.length === 0" style="text-align:center;padding-top:30px;">
+                <span class="btn btn-success boom-btn">You don't have any valid metrics yet</span>
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    Please check your queries / refresh metrics.
+                </p>
+            </div>
+            <div class="edit-tab-content" ng-if="ctrl.panel.stats.length === 0 && ctrl.masterdata.length > 0" style="text-align:center;padding-top:30px;">
+                <a class="btn btn-success boom-btn" ng-click="ctrl.autoGenerateStats();">Auto Generate all stats</a>
+                <a class="btn btn-success boom-btn" ng-click="ctrl.addStat();">Add First Stat</a>
             </div>
             <div class="edit-tab-content" ng-repeat="stat in ctrl.panel.stats track by $index" ng-if="ctrl.panel.activeStatIndex === $index">
                 <div class="editor-row">

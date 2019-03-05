@@ -51,7 +51,9 @@
                             <div class="gf-form">
                                 <label class="gf-form-label width-12">Field</label>
                                 <span class="mini-split"></span>
-                                <input type="text" placeholder="Field Name" class="gf-form-input width-12" ng-model="stat.field" data-ng-change="ctrl.render();" />
+                                <input type="text" placeholder="Field Name" class="gf-form-input width-12" ng-model="stat.field" 
+                                    bs-typeahead="ctrl.colnames" ng-blur="this.render()" data-min-length=0 data-items=100 ng-model-onblur
+                                    data-placement="right">
                                 <span class="mini-split"></span>
                                 <label class="gf-form-label width-12">Title</label>
                                 <span class="mini-split"></span>
@@ -109,8 +111,10 @@
                         <div class="gr-form-inline" ng-repeat="filter in stat.filters track by $index">
                             <div class="gf-form">
                                 <div class="gf-form">
-                                    <label class="gf-form-label width-12">Field</label>
-                                    <input type="text" class="gf-form-input width-12" placeholder="Field" ng-model="filter.field" ng-blur="ctrl.render()" data-ng-change="ctrl.render();" />
+                                    <label class="gf-form-label width-12">Field</label>                                    
+                                    <input type="text" placeholder="Field Name" class="gf-form-input width-12" ng-model="filter.field" 
+                                    bs-typeahead="ctrl.colnames" ng-blur="this.render()" data-min-length=0 data-items=100 ng-model-onblur
+                                    data-placement="right">
                                     <span class="mini-split"></span>
                                     <select class="gf-form-input width-12" ng-model="filter.operator" ng-options="f.value as f.text for f in ctrl.compareOperators" ng-change="ctrl.render()"></select>
                                     <span class="mini-split"></span>

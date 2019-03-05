@@ -17,6 +17,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
   public attrs: any;
   public activeStatIndex = 0;
   public masterdata: any = [];
+  public colnames;
   public unitFormats = kbn.getUnitFormats();
   public statTypes = config.statTypes;
   public compareOperators = config.compareOperators;
@@ -46,6 +47,13 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
 
   private onDataReceived(data: any): void {
     this.masterdata = buildMasterData(data);
+    this.colnames = [];
+    _.each(this.masterdata, group => {
+      _.each(group, item => {
+        this.colnames.push(item.colname);
+      });
+    });
+    this.colnames = _.uniq(this.colnames);
     this.render();
   }
 

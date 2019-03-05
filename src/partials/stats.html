@@ -37,7 +37,7 @@
             <div class="edit-tab-content" ng-if="ctrl.panel.stats.length === 0 && ctrl.masterdata.length > 0" style="text-align:center;padding-top:30px;">
                 <a class="btn btn-success boom-btn" ng-click="ctrl.autoGenerateStats();">Auto Generate all stats</a>
                 <a class="btn btn-success boom-btn" ng-click="ctrl.addStat();">Add First Normal Stat</a>
-                <a class="btn btn-success boom-btn" ng-click="ctrl.addStat('BIG');">Add First Jumbo Stat</a>
+                <a class="btn btn-success boom-btn" ng-click="ctrl.addStat('JUMBO');">Add First Jumbo Stat</a>
             </div>
             <div class="edit-tab-content" ng-repeat="stat in ctrl.panel.stats track by $index" ng-if="ctrl.activeStatIndex === $index">
                 <div class="editor-row">

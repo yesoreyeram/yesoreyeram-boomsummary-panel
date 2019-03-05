@@ -44,4 +44,5 @@ export interface IBoomSummaryStat {
   public setUnitFormat;
   public getStats;
   public getValues;
+  public getTemplateWithTokensReplaced;
 }

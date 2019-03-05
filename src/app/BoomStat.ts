@@ -2,6 +2,7 @@ import _ from "lodash";
 import { BoomSummaryFilter } from "./Filters/BoomFilter";
 import { BoomSummaryConditionalFormats } from "./Filters/BoomConditionalFormat";
 import { isMatch } from "../utils/MatchUtils";
+import { getFormattedOutput } from "./../utils/GrafanaUtils";
 import { IBoomSummaryStat } from "../definitions/types";
 import { config } from "../config";
 
@@ -25,13 +26,13 @@ export class BoomSummaryStat implements IBoomSummaryStat {
   public setUnitFormat;
   public getStats;
   public getValues;
+  public getTemplateWithTokensReplaced;
   constructor(options) {
     this.field = options.field || "Sample";
     this.title = options.title || this.field;
     this.defaultStat = options.defaultStat || "${first}";
     this.display_template =
-      options.display_template ||
-      config.templates.default_normal;
+      options.display_template || config.templates.default_normal;
     this.statWidth = options.statWidth || "100";
     this.bgColor = options.bgColor || "";
     this.textColor = options.textColor || "";
@@ -44,8 +45,8 @@ export class BoomSummaryStat implements IBoomSummaryStat {
 
 BoomSummaryStat.prototype.addFilter = function(): void {
   let newfilter = new BoomSummaryFilter({
-    field : this.field || "Sample",
-    operator : "equals"
+    field: this.field || "Sample",
+    operator: "equals"
   });
   this.filters = this.filters || [];
   this.filters.push(newfilter);
@@ -60,7 +61,7 @@ BoomSummaryStat.prototype.removeFilter = function(index: Number): void {
 BoomSummaryStat.prototype.addConditonalFormat = function(): void {
   let new_conditional_formatter = new BoomSummaryConditionalFormats({
     field: this.defaultStat || "${first}",
-    operator : "equals"
+    operator: "equals"
   });
   this.conditional_formats = this.conditional_formats || [];
   this.conditional_formats.push(new_conditional_formatter);
@@ -141,4 +142,76 @@ BoomSummaryStat.prototype.getStats = function(mystats): any {
   statsgroup.max = _.max(mystats.map(s => +s));
   statsgroup.first = _.first(mystats);
   return statsgroup;
+};
+
+BoomSummaryStat.prototype.getTemplateWithTokensReplaced = function(
+  template,
+  statsGroup
+) {
+  let output = template;
+  output = output.replace(
+    /\$\{[^}]?default\}/gi,
+    this.defaultStat || "${first}"
+  );
+  output = output.replace(
+    /\$\{[^}]?default_raw\}/gi,
+    (this.defaultStat || "${first}").replace("}", "_raw}")
+  );
+  output = output.replace(
+    /\$\{[^}]?first\}/gi,
+    isNaN(statsGroup.first)
+      ? statsGroup.first
+      : getFormattedOutput(statsGroup.first, this.format, this.decimals)
+  );
+  output = output.replace(/\$\{[^}]?first_raw\}/gi, statsGroup.first);
+  output = output.replace(
+    /\$\{[^}]?min\}/gi,
+    isNaN(statsGroup.min)
+      ? statsGroup.min
+      : getFormattedOutput(statsGroup.min, this.format, this.decimals)
+  );
+  output = output.replace(/\$\{[^}]?min_raw\}/gi, statsGroup.min);
+  output = output.replace(
+    /\$\{[^}]?max\}/gi,
+    isNaN(statsGroup.max)
+      ? statsGroup.max
+      : getFormattedOutput(statsGroup.max, this.format, this.decimals)
+  );
+  output = output.replace(/\$\{[^}]?max_raw\}/gi, statsGroup.max);
+  output = output.replace(
+    /\$\{[^}]?mean\}/gi,
+    isNaN(statsGroup.mean)
+      ? statsGroup.mean
+      : getFormattedOutput(statsGroup.mean, this.format, this.decimals)
+  );
+  output = output.replace(/\$\{[^}]?mean_raw\}/gi, statsGroup.mean);
+  output = output.replace(
+    /\$\{[^}]?sum\}/gi,
+    isNaN(statsGroup.sum)
+      ? statsGroup.sum
+      : getFormattedOutput(statsGroup.sum, this.format, this.decimals)
+  );
+  output = output.replace(/\$\{[^}]?sum_raw\}/gi, statsGroup.sum);
+  output = output.replace(
+    /\$\{[^}]?count\}/gi,
+    isNaN(statsGroup.count)
+      ? statsGroup.count
+      : getFormattedOutput(statsGroup.count || 0, "none", "0")
+  );
+  output = output.replace(/\$\{[^}]?count_raw\}/gi, statsGroup.count);
+  output = output.replace(
+    /\$\{[^}]?uniquecount\}/gi,
+    isNaN(statsGroup.uniquecount)
+      ? statsGroup.uniquecount
+      : getFormattedOutput(statsGroup.uniquecount || 0, "none", "0")
+  );
+  output = output.replace(
+    /\$\{[^}]?uniquecount_raw\}/gi,
+    statsGroup.uniquecount
+  );
+  output = output.replace(/\$\{[^}]?title\}/gi, this.title);
+  output = output.replace(/\$\{[^}]?field\}/gi, this.field);
+  output = output.replace(/\$\{[^}]?bgColor\}/gi, this.bgColor);
+  output = output.replace(/\$\{[^}]?textColor\}/gi, this.textColor);
+  return output;
 };

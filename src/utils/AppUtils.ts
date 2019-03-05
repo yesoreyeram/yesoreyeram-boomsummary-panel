@@ -1,5 +1,4 @@
 import _ from "lodash";
-import { getFormattedOutput } from "./GrafanaUtils";
 import { isMatch } from "./MatchUtils";
 import { BoomSummaryStat } from "../app/BoomStat";
 
@@ -87,50 +86,13 @@ export let replaceTokens = function(value) {
   return value;
 };
 
-export let getStatFromStatsGroup = function(
-  statsGroup,
-  stat,
-  format,
-  decimals
-) {
-  switch (stat.toLowerCase()) {
-    case "first":
-    case "default":
-    case "value":
-      return isNaN(statsGroup.first)
-        ? statsGroup.first
-        : getFormattedOutput(statsGroup.first, format, decimals);
-    case "count":
-    case "length":
-      return isNaN(statsGroup.count)
-        ? statsGroup.count
-        : getFormattedOutput(statsGroup.count, "none", "0");
-    case "uniquecount":
-    case "uniquelength":
-      return isNaN(statsGroup.uniquecount)
-        ? statsGroup.uniquecount
-        : getFormattedOutput(statsGroup.uniquecount, "none", "0");
-    case "sum":
-    case "total":
-      return isNaN(statsGroup.sum)
-        ? statsGroup.sum
-        : getFormattedOutput(statsGroup.sum, format, decimals);
-    case "mean":
-    case "avg":
-    case "average":
-      return isNaN(statsGroup.mean)
-        ? statsGroup.mean
-        : getFormattedOutput(statsGroup.mean, format, decimals);
-    case "min":
-      return isNaN(statsGroup.min)
-        ? statsGroup.min
-        : getFormattedOutput(statsGroup.min, format, decimals);
-    case "max":
-      return isNaN(statsGroup.max)
-        ? statsGroup.max
-        : getFormattedOutput(statsGroup.max, format, decimals);
-  }
-  return "Not a valid stat";
+export let getStatFromStatsGroup = function(statsGroup, statName) {
+  statName = statName
+    .toLowerCase()
+    .trim()
+    .replace("${", "")
+    .replace("}", "");
+  return statsGroup[statName] || null;
 };
 
 export let buildOutput = function(statWidth, output, bgColor, textColor) {
@@ -143,16 +105,16 @@ export let buildOutput = function(statWidth, output, bgColor, textColor) {
 export let getMatchingCondition = function(statsGroup, stat) {
   let matching_condition = _.first(
     stat.conditional_formats.filter(condition => {
-      let original_value = getStatFromStatsGroup(
-        statsGroup,
-        (condition.field || "${value}").replace("${", "").replace("}", ""),
-        stat.format,
-        stat.decimals
+      let original_statName = (condition.field || "${value}")
+        .replace("${", "")
+        .replace("}", "");
+      let original_value = getStatFromStatsGroup(statsGroup, original_statName);
+      return isMatch(
+        original_value,
+        condition.operator,
+        condition.value,
+        condition.valu2
       );
-      let operator = condition.operator;
-      let compare_value1 = condition.value;
-      let compare_value2 = condition.value2;
-      return isMatch(original_value, operator, compare_value1, compare_value2);
     })
   );
   return matching_condition;
@@ -160,127 +122,26 @@ export let getMatchingCondition = function(statsGroup, stat) {
 
 export let getOutputValue = function(masterdata, stat: BoomSummaryStat) {
   if (masterdata.length === 0) {
-    return {
-      bgColor: "",
-      output: "No data",
-      textColor: "red"
-    };
+    return "<div style='text-align:center;'>No Data</div>";
   } else {
     let mystats: any = stat.getValues(masterdata);
     let statsGroup = stat.getStats(mystats);
     let matching_condition = getMatchingCondition(statsGroup, stat);
-    let bgColor = stat.bgColor;
-    let textColor = stat.textColor;
-    let template = stat.display_template;
-    if (matching_condition) {
-      bgColor = matching_condition.bgColor || stat.bgColor;
-      textColor = matching_condition.textColor || stat.textColor;
-      template = matching_condition.display_template || stat.display_template;
-    }
-    let outstat = getStatFromStatsGroup(
-      statsGroup,
-      stat.display_template,
-      stat.format,
-      stat.decimals
+    let bgColor =
+      matching_condition && matching_condition.bgColor
+        ? matching_condition.bgColor
+        : stat.bgColor;
+    let textColor =
+      matching_condition && matching_condition.textColor
+        ? matching_condition.textColor
+        : stat.textColor;
+    let template =
+      matching_condition && matching_condition.display_template
+        ? matching_condition.display_template
+        : stat.display_template;
+    let template_replaced1 = replaceTokens(
+      stat.getTemplateWithTokensReplaced(template, statsGroup)
     );
-    if (outstat !== "Not a valid stat") {
-      return {
-        bgColor: bgColor,
-        output: outstat + "",
-        textColor: textColor
-      };
-    }
-    let output = template;
-    output = output.replace(
-      /\$\{[^}]?default\}/gi,
-      stat.defaultStat || "${first}"
-    );
-    output = output.replace(
-      /\$\{[^}]?value\}/gi,
-      isNaN(statsGroup.first)
-        ? statsGroup.first
-        : getFormattedOutput(statsGroup.first, stat.format, stat.decimals)
-    );
-    output = output.replace(
-      /\$\{[^}]?first\}/gi,
-      isNaN(statsGroup.first)
-        ? statsGroup.first
-        : getFormattedOutput(statsGroup.first, stat.format, stat.decimals)
-    );
-    output = output.replace(
-      /\$\{[^}]?count\}/gi,
-      isNaN(statsGroup.count)
-        ? statsGroup.count
-        : getFormattedOutput(statsGroup.count || 0, "none", "0")
-    );
-    output = output.replace(
-      /\$\{[^}]?length\}/gi,
-      isNaN(statsGroup.count)
-        ? statsGroup.count
-        : getFormattedOutput(statsGroup.count || 0, "none", "0")
-    );
-    output = output.replace(
-      /\$\{[^}]?uniquecount\}/gi,
-      isNaN(statsGroup.uniquecount)
-        ? statsGroup.uniquecount
-        : getFormattedOutput(statsGroup.uniquecount || 0, "none", "0")
-    );
-    output = output.replace(
-      /\$\{[^}]?uniquelength\}/gi,
-      isNaN(statsGroup.uniquecount)
-        ? statsGroup.uniquecount
-        : getFormattedOutput(statsGroup.uniquecount || 0, "none", "0")
-    );
-    output = output.replace(
-      /\$\{[^}]?sum\}/gi,
-      isNaN(statsGroup.sum)
-        ? statsGroup.sum
-        : getFormattedOutput(statsGroup.sum, stat.format, stat.decimals)
-    );
-    output = output.replace(
-      /\$\{[^}]?total\}/gi,
-      isNaN(statsGroup.sum)
-        ? statsGroup.sum
-        : getFormattedOutput(statsGroup.sum, stat.format, stat.decimals)
-    );
-    output = output.replace(
-      /\$\{[^}]?mean\}/gi,
-      isNaN(statsGroup.mean)
-        ? statsGroup.mean
-        : getFormattedOutput(statsGroup.mean, stat.format, stat.decimals)
-    );
-    output = output.replace(
-      /\$\{[^}]?average\}/gi,
-      isNaN(statsGroup.mean)
-        ? statsGroup.mean
-        : getFormattedOutput(statsGroup.mean, stat.format, stat.decimals)
-    );
-    output = output.replace(
-      /\$\{[^}]?avg\}/gi,
-      isNaN(statsGroup.mean)
-        ? statsGroup.mean
-        : getFormattedOutput(statsGroup.mean, stat.format, stat.decimals)
-    );
-    output = output.replace(
-      /\$\{[^}]?min\}/gi,
-      isNaN(statsGroup.min)
-        ? statsGroup.min
-        : getFormattedOutput(statsGroup.min, stat.format, stat.decimals)
-    );
-    output = output.replace(
-      /\$\{[^}]?max\}/gi,
-      isNaN(statsGroup.max)
-        ? statsGroup.max
-        : getFormattedOutput(statsGroup.max, stat.format, stat.decimals)
-    );
-    output = output.replace(/\$\{[^}]?title\}/gi, stat.title);
-    output = output.replace(/\$\{[^}]?field\}/gi, stat.field);
-    output = output.replace(/\$\{[^}]?bgColor\}/gi, stat.bgColor);
-    output = output.replace(/\$\{[^}]?textColor\}/gi, stat.textColor);
-    return {
-      bgColor,
-      output,
-      textColor
-    };
+    return buildOutput(stat.statWidth, template_replaced1, bgColor, textColor);
   }
 };

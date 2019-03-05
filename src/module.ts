@@ -7,7 +7,7 @@ import { IBoomSummaryCtl } from "./definitions/types";
 import { BoomSummaryStat } from "./app/BoomStat";
 import { buildMasterData } from "./app/DataHandler";
 import { config } from "./config";
-import { getOutputValue, buildOutput, replaceTokens } from "./utils/AppUtils";
+import { getOutputValue } from "./utils/AppUtils";
 
 loadPluginCss(config.cssThemes);
 
@@ -151,12 +151,7 @@ BoomSummaryCtl.prototype.render = function() {
   let output = ``;
   _.each(this.panel.stats, stat => {
     let o = getOutputValue(this.masterdata, stat);
-    output += buildOutput(
-      stat.statWidth,
-      replaceTokens(o.output),
-      o.bgColor,
-      o.textColor
-    );
+    output += o;
   });
   this.elem.find("#boomsummary-panel").html(output);
 };

@@ -44,21 +44,32 @@ Output template can be in HTML format. Some of the sample template are given bel
 
 Templates can contain token which will be automatically replaced at runtime.
 
-| Token name      | Output                                                    |
-| ----------------|-----------------------------------------------------------|
-| `${default}`    | First column of the selected field.                       | 
-| `${value}`      | First column of the selected field.                       | 
-| `${count}`      | Number of matching rows.                                  | 
-| `${uniquecount}`| Unique number of results for the matching field.          | 
-| `${sum}`        | Sum value of the selected field                           | 
-| `${mean}`       | Mean value of the selected field                          | 
-| `${min}`        | Minimum value of the selected field                       | 
-| `${max}`        | Maximum value of the selected field                       | 
-| `${title}`      | Title of the stat                                         | 
-| `${field}`      | Column Name of the stat                                   | 
-| `${bgColor}`    | BG Color value of the stat                                | 
-| `${textColor}`  | Text Color value of the stat                              | 
-
+| Token name            | Output                                                    |
+| ----------------------|-----------------------------------------------------------|
+|  **Values Formatted** |                                                           |
+| `${first}`            | First column of the selected field.                       | 
+| `${min}`              | Minimum value of the selected field                       | 
+| `${max}`              | Maximum value of the selected field                       | 
+| `${mean}`             | Mean value of the selected field                          | 
+| `${sum}`              | Sum value of the selected field                           | 
+| `${count}`            | Number of matching rows.                                  | 
+| `${uniquecount}`      | Unique number of results for the matching field.          | 
+| `${default}`          | Configured default stat OR ${first}                       | 
+|  **Raw values**       |                                                           |
+| `${first_raw}`        | First column of the selected field without units.         | 
+| `${min_raw}`          | Minimum value of the selected field without units.        | 
+| `${max_raw}`          | Maximum value of the selected field without units.        | 
+| `${mean_raw}`         | Mean value of the selected field without units.           | 
+| `${sum_raw}`          | Sum value of the selected field without units.            | 
+| `${count_raw}`        | Number of matching rows without units.                    | 
+| `${uniquecount_raw}`  | Unique number of results for the field without units.     | 
+| `${default_raw}`      | Configured default stat OR ${first} without units.        | 
+| **Special Items**     |                                                           |
+| `${title}`            | Title of the stat                                         | 
+| `${field}`            | Column Name of the stat                                   | 
+| `${bgColor}`          | BG Color value of the stat                                | 
+| `${textColor}`        | Text Color value of the stat                              |
+| ----------------------|-----------------------------------------------------------| 
 
 ## Filters
 

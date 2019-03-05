@@ -9,9 +9,9 @@
                         </a>
                     </li>
                     <li ng-repeat="stat in ctrl.panel.stats track by $index" ng-class="{active: ctrl.activeStatIndex === $index}">
-                        <a ng-click="ctrl.activeStatIndex = $index">{{
-              stat.title || stat.field
-            }}</a>
+                        <a ng-click="ctrl.activeStatIndex = $index">
+                            {{ctrl.limitText(stat.title || stat.field || 'New Stat',12)}}
+                        </a>
                     </li>
                 </ul>
                 <br/>

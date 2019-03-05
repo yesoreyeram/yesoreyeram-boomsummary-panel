@@ -143,6 +143,13 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
     }
     this.render();
   }
+
+  public limitText(text: string, maxlength: Number): string {
+    if (text.split("").length > maxlength) {
+      text = text.substring(0, Number(maxlength) - 3) + "...";
+    }
+    return text;
+  }
 }
 
 BoomSummaryCtl.prototype.render = function() {

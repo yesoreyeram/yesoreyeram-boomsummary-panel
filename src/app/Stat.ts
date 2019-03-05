@@ -20,12 +20,12 @@ export class BoomSummaryStat {
   public setUnitFormat;
   constructor(options) {
     this.field = options.field || "Sample";
-    this.title = options.title || this.field + " info";
+    this.title = options.title || this.field;
     this.display_template =
       options.display_template ||
-      `<div style="width:100%;float:left;">
-            <div style="width:50%;float:left;padding:10px;border:1px solid black;">\${title}</div>
-            <div style="width:50%;float:left;padding:10px;border:1px solid black;">\${default}</div>
+      `<div style="width:100%;float:left;border:1px solid black;border-width:1px 1px 0px 1px">
+      <div style="width:50%;float:left;padding:10px;">\${title}</div>
+      <div style="width:50%;float:left;padding:10px;">\${default}</div>
 </div>`;
     this.statWidth = options.statWidth || "100";
     this.bgColor = options.bgColor || "";

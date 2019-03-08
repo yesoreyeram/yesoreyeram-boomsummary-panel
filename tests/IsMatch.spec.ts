@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { isMatch } from "./../src/utils/MatchUtils";
+import { isMatch } from "./../src/utils/BoomUtils";
 
 describe("MatchUtils isMatch Tests", () => {
   let PASS = true;

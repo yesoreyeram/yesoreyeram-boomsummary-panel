@@ -1,9 +1,14 @@
 import _ from "lodash";
 import { BoomSummaryFilter } from "./Filters/BoomFilter";
 import { BoomSummaryConditionalFormats } from "./Filters/BoomConditionalFormat";
-import { isMatch } from "../utils/MatchUtils";
+import {
+  getStatFromStatsGroup,
+  replaceTokens,
+  getStatsFromArrayOfObjects,
+  isMatch
+} from "../utils/BoomUtils";
+import { getFilteredDataFromMasterData } from "./../utils/AppUtils";
 import { getFormattedOutput } from "./../utils/GrafanaUtils";
-import { getStatFromStatsGroup, replaceTokens } from "./../utils/AppUtils";
 import { IBoomSummaryStat } from "../definitions/types";
 import { config } from "../config";
 
@@ -101,50 +106,19 @@ BoomSummaryStat.prototype.setUnitFormat = function(format: any): void {
   this.format = format && format.value ? format.value : "none";
 };
 
-let didSatisfyFilters = function(group, filters) {
-  if (filters && filters.length > 0) {
-    let matches = 0;
-    _.each(filters, filter => {
-      let matching_field = _.filter(group, g => g.colname === filter.field);
-      if (matching_field && matching_field.length > 0) {
-        matches +=
-          isMatch(
-            matching_field[0].value,
-            filter.operator,
-            filter.value,
-            filter.value2
-          ) === true
-            ? 1
-            : 0;
-      }
-    });
-    return matches === filters.length;
-  } else {
-    return true;
-  }
-};
-
 BoomSummaryStat.prototype.getValues = function(masterdata): any {
+  let filteredMasterData = getFilteredDataFromMasterData(
+    masterdata,
+    this.filters
+  );
   let mystats: any = [];
-  _.each(masterdata, group => {
+  _.each(filteredMasterData, group => {
     let matching_field = _.filter(group, g => g.colname === this.field);
-    if (matching_field.length > 0 && didSatisfyFilters(group, this.filters)) {
+    if (matching_field.length > 0) {
       mystats.push(_.first(matching_field).value);
     }
   });
-  return mystats;
-};
-
-let getStats = function(mystats): any {
-  let statsgroup: any = {};
-  statsgroup.count = mystats.length;
-  statsgroup.uniquecount = _.uniq(mystats).length;
-  statsgroup.sum = _.sum(mystats.map(s => +s));
-  statsgroup.mean = _.mean(mystats.map(s => +s));
-  statsgroup.min = _.min(mystats.map(s => +s));
-  statsgroup.max = _.max(mystats.map(s => +s));
-  statsgroup.first = _.first(mystats);
-  return statsgroup;
+  return getStatsFromArrayOfObjects(mystats);
 };
 
 BoomSummaryStat.prototype.getTemplateWithTokensReplaced = function(
@@ -153,78 +127,93 @@ BoomSummaryStat.prototype.getTemplateWithTokensReplaced = function(
 ) {
   let output = template;
   output = output.replace(
-    /\$\{[^}]?default\}/gi,
+    new RegExp(/\$\{[^}]?default\}/, "gi"),
     this.defaultStat || "${first}"
   );
   output = output.replace(
-    /\$\{[^}]?default_raw\}/gi,
+    new RegExp(/\$\{[^}]?default_raw\}/, "gi"),
     (this.defaultStat || "${first}").replace("}", "_raw}")
   );
   output = output.replace(
-    /\$\{[^}]?first\}/gi,
+    new RegExp(/\$\{[^}]?first\}/, "gi"),
     isNaN(statsGroup.first)
       ? statsGroup.first
       : getFormattedOutput(statsGroup.first, this.format, this.decimals)
   );
-  output = output.replace(/\$\{[^}]?first_raw\}/gi, statsGroup.first);
   output = output.replace(
-    /\$\{[^}]?min\}/gi,
+    new RegExp(/\$\{[^}]?first_raw\}/, "gi"),
+    statsGroup.first
+  );
+  output = output.replace(
+    new RegExp(/\$\{[^}]?min\}/, "gi"),
     isNaN(statsGroup.min)
       ? statsGroup.min
       : getFormattedOutput(statsGroup.min, this.format, this.decimals)
   );
-  output = output.replace(/\$\{[^}]?min_raw\}/gi, statsGroup.min);
   output = output.replace(
-    /\$\{[^}]?max\}/gi,
+    new RegExp(/\$\{[^}]?min_raw\}/, "gi"),
+    statsGroup.min
+  );
+  output = output.replace(
+    new RegExp(/\$\{[^}]?max\}/, "gi"),
     isNaN(statsGroup.max)
       ? statsGroup.max
       : getFormattedOutput(statsGroup.max, this.format, this.decimals)
   );
-  output = output.replace(/\$\{[^}]?max_raw\}/gi, statsGroup.max);
   output = output.replace(
-    /\$\{[^}]?mean\}/gi,
+    new RegExp(/\$\{[^}]?max_raw\}/, "gi"),
+    statsGroup.max
+  );
+  output = output.replace(
+    new RegExp(/\$\{[^}]?mean\}/, "gi"),
     isNaN(statsGroup.mean)
       ? statsGroup.mean
       : getFormattedOutput(statsGroup.mean, this.format, this.decimals)
   );
-  output = output.replace(/\$\{[^}]?mean_raw\}/gi, statsGroup.mean);
   output = output.replace(
-    /\$\{[^}]?sum\}/gi,
+    new RegExp(/\$\{[^}]?mean_raw\}/, "gi"),
+    statsGroup.mean
+  );
+  output = output.replace(
+    new RegExp(/\$\{[^}]?sum\}/, "gi"),
     isNaN(statsGroup.sum)
       ? statsGroup.sum
       : getFormattedOutput(statsGroup.sum, this.format, this.decimals)
   );
-  output = output.replace(/\$\{[^}]?sum_raw\}/gi, statsGroup.sum);
   output = output.replace(
-    /\$\{[^}]?count\}/gi,
+    new RegExp(/\$\{[^}]?sum_raw\}/, "gi"),
+    statsGroup.sum
+  );
+  output = output.replace(
+    new RegExp(/\$\{[^}]?count\}/, "gi"),
     isNaN(statsGroup.count)
       ? statsGroup.count
       : getFormattedOutput(statsGroup.count || 0, "none", "0")
   );
-  output = output.replace(/\$\{[^}]?count_raw\}/gi, statsGroup.count);
   output = output.replace(
-    /\$\{[^}]?uniquecount\}/gi,
+    new RegExp(/\$\{[^}]?count_raw\}/, "gi"),
+    statsGroup.count
+  );
+  output = output.replace(
+    new RegExp(/\$\{[^}]?uniquecount\}/, "gi"),
     isNaN(statsGroup.uniquecount)
       ? statsGroup.uniquecount
       : getFormattedOutput(statsGroup.uniquecount || 0, "none", "0")
   );
   output = output.replace(
-    /\$\{[^}]?uniquecount_raw\}/gi,
+    new RegExp(/\$\{[^}]?uniquecount_raw\}/, "gi"),
     statsGroup.uniquecount
   );
-  output = output.replace(/\$\{[^}]?title\}/gi, this.title);
-  output = output.replace(/\$\{[^}]?field\}/gi, this.field);
-  output = output.replace(/\$\{[^}]?bgColor\}/gi, this.bgColor);
-  output = output.replace(/\$\{[^}]?textColor\}/gi, this.textColor);
+  output = output.replace(new RegExp(/\$\{[^}]?title\}/, "gi"), this.title);
+  output = output.replace(new RegExp(/\$\{[^}]?field\}/, "gi"), this.field);
+  output = output.replace(new RegExp(/\$\{[^}]?bgColor\}/, "gi"), this.bgColor);
+  output = output.replace(
+    new RegExp(/\$\{[^}]?textColor\}/, "gi"),
+    this.textColor
+  );
   return output;
 };
 
-let buildOutput = function(statWidth, output, bgColor, textColor) {
-  return `<div style="width:${statWidth ||
-    "100"}%;float:left;background:${bgColor};color:${textColor};">
-    ${output}
-  </div>`;
-};
 BoomSummaryStat.prototype.getMatchingCondition = function(statsGroup) {
   let matching_condition = _.first(
     this.conditional_formats.filter(condition => {
@@ -242,12 +231,12 @@ BoomSummaryStat.prototype.getMatchingCondition = function(statsGroup) {
   );
   return matching_condition;
 };
+
 BoomSummaryStat.prototype.getOutputValue = function(masterdata) {
   if (masterdata.length === 0) {
     return "<div style='text-align:center;'>No Data</div>";
   } else {
-    let mystats: any = this.getValues(masterdata);
-    let statsGroup = getStats(mystats);
+    let statsGroup = this.getValues(masterdata);
     let matching_condition = this.getMatchingCondition(statsGroup);
     let bgColor =
       matching_condition && matching_condition.bgColor
@@ -264,6 +253,9 @@ BoomSummaryStat.prototype.getOutputValue = function(masterdata) {
     let template_replaced = replaceTokens(
       this.getTemplateWithTokensReplaced(template, statsGroup)
     );
-    return buildOutput(this.statWidth, template_replaced, bgColor, textColor);
+    return `<div style="width:${this.statWidth ||
+      "100"}%;float:left;background:${bgColor};color:${textColor};">
+      ${template_replaced}
+    </div>`;
   }
 };

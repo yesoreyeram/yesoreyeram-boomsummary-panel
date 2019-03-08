@@ -151,8 +151,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
 BoomSummaryCtl.prototype.render = function() {
   let output = ``;
   _.each(this.panel.stats, stat => {
-    let o = stat.getOutputValue(this.masterdata);
-    output += o;
+    output += stat.getOutputValue(this.masterdata);
   });
   this.elem.find("#boomsummary-panel").html(output);
 };

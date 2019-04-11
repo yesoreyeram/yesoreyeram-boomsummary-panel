@@ -154,7 +154,7 @@ BoomSummaryCtl.prototype.render = function () {
   if (this.ctrl.panel.repeatmode) {
     let cols = _.uniq(_.flatMap(this.masterdata).filter(t => t.colname === this.ctrl.panel.repeatcolumn).map(t => t.value));
     _.each(cols, col => {
-      output += `<div class="col-md-${_.min([+(this.ctrl.panel.repeatwidth), 12]) }" style="margin-bottom:20px;">`;
+      output += `<div class="col-md-${_.min([+(this.ctrl.panel.repeatwidth), 12])}" style="margin-bottom:${this.ctrl.panel.repeat_margin_bottom || "20"}px;">`;
       let mymasterdata = this.masterdata.filter(t => t.filter(t1 => t1.value === col && t1.colname === this.ctrl.panel.repeatcolumn).length === 1);
       _.each(this.panel.stats, stat => {
         output += stat.getOutputValue(mymasterdata);
@@ -170,6 +170,14 @@ BoomSummaryCtl.prototype.render = function () {
     </div>
   `;
   this.elem.find("#boomsummary-panel").html(output);
+
+  if (this.ctrl && this.ctrl.elem[0]) {
+    let rootElem = this.elem.find('.table-panel-scroll');
+    let maxheightofpanel = this.ctrl.elem[0].clientHeight - 31;
+    rootElem.css({ 'max-height': maxheightofpanel + "px" });
+  }
+
+
 };
 
 export { BoomSummaryCtl as PanelCtrl };

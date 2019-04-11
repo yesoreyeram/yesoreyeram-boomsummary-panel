@@ -39,13 +39,35 @@
               data-ng-change="ctrl.render();"
             />
             <span class="mini-split"></span>
-            <label class="gf-form-label width-20">Repeat Width ( 1 to 12 ); 12 == 100%</label>
+          </div>
+        </div>
+
+        <div class="gr-form-iline" ng-if="ctrl.panel.repeatmode === true">
+          <div class="gf-form">
+            <label class="gf-form-label width-20"
+              >Repeat Width ( 1 to 12 ); 12 == 100%</label
+            >
             <span class="mini-split"></span>
             <input
               type="text"
               placeholder="Repeater width ( 1 to 12 ); 12 == 100%;"
               class="gf-form-input width-12"
               ng-model="ctrl.panel.repeatwidth"
+              ng-blur="this.render()"
+              data-min-length="0"
+              data-items="100"
+              ng-model-onblur
+              data-placement="right"
+              data-ng-change="ctrl.render();"
+            />
+            <span class="mini-split"></span>
+            <label class="gf-form-label width-20">Margin Bottom in pixel</label>
+            <span class="mini-split"></span>
+            <input
+              type="text"
+              placeholder="20"
+              class="gf-form-input width-12"
+              ng-model="ctrl.panel.repeat_margin_bottom"
               ng-blur="this.render()"
               data-min-length="0"
               data-items="100"

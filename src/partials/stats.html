@@ -49,55 +49,65 @@
                         </div>
                         <div class="gr-form-inline">
                             <div class="gf-form">
-                                <label class="gf-form-label width-12">Field</label>
+                                <label class="gf-form-label width-12">SELECT</label>
+                                <span class="mini-split"></span>
+                                <select class="gf-form-input width-12" ng-model="stat.defaultStat" ng-options="f.value as f.text for f in ctrl.statTypes" ng-change="ctrl.render()"></select>
+                                <span class="mini-split"></span>
+                                <label class="gf-form-label width-12">OF</label>
                                 <span class="mini-split"></span>
                                 <input type="text" placeholder="Field Name" class="gf-form-input width-12" ng-model="stat.field" 
                                     bs-typeahead="ctrl.colnames" ng-blur="this.render()" data-min-length=0 data-items=100 ng-model-onblur
                                     data-placement="right">
                                 <span class="mini-split"></span>
-                                <label class="gf-form-label width-12">Title</label>
+                                <label class="gf-form-label width-12">AS</label>
                                 <span class="mini-split"></span>
                                 <input type="text" placeholder="Title" class="gf-form-input width-12" ng-model="stat.title" data-ng-change="ctrl.render();" />
                                 <span class="mini-split"></span>
-                                <label class="gf-form-label width-12">${default} stat</label>
-                                <span class="mini-split"></span>
-                                <select class="gf-form-input width-12" ng-model="stat.defaultStat" ng-options="f.value as f.text for f in ctrl.statTypes" ng-change="ctrl.render()"></select>
                             </div>
                         </div>
-                        <div class="gr-form-inline">
-                            <div class="gf-form">
-                                <label class="gf-form-label width-12">Output template </label>
-                                <span class="mini-split"></span>
-                                <textarea class="gf-form-input" style="width:100%" rows="5" ng-model="stat.display_template" data-ng-change="ctrl.render();" placeholder="Stat Display template. Supports html. `DEFAULT` gives default stat without any formatting"></textarea>
-                            </div>
-                        </div>
-                        <div class="gr-form-inline">
-                            <div class="gf-form">
-                                <label class="gf-form-label width-12">Stat Width in %</label>
-                                <span class="mini-split"></span>
-                                <input type="text" placeholder="Between 10 to 100 (multiplies of 10)" class="gf-form-input width-12" ng-model="stat.statWidth" data-ng-change="ctrl.render();" />
-                                <span class="mini-split"></span>
-                                <label class="gf-form-label width-12">BG Color</label>
-                                <span class="mini-split"></span>
-                                <input type="text" placeholder="Background color" class="gf-form-input width-12" ng-model="stat.bgColor" data-ng-change="ctrl.render();" />
-                                <span class="mini-split"></span>
-                                <label class="gf-form-label width-12">Text Color</label>
-                                <span class="mini-split"></span>
-                                <input type="text" placeholder="Text Color" class="gf-form-input width-12" ng-model="stat.textColor" data-ng-change="ctrl.render();" />
-                                <span class="mini-split"></span>
-                            </div>
-                        </div>                        
-                        <div class="gr-form-inline">
-                                <div class="gf-form">                                          
-                                    <label class="gf-form-label width-12">Decimals</label>
-                                    <span class="mini-split"></span>
-                                    <select class="gf-form-input width-12" ng-model="stat.decimals" ng-options="f.value as f.text for f in ctrl.decimalValues" ng-change="ctrl.render()"></select>
-                                    <span class="mini-split"></span>
-                                    <label class="gf-form-label width-12">Format</label>
-                                    <span class="mini-split"></span>
-                                    <div class="gf-form-dropdown-typeahead width-12" ng-model="stat.format"
-                                        dropdown-typeahead2="ctrl.unitFormats" dropdown-typeahead-on-select="stat.setUnitFormat($subItem);ctrl.render();"></div>      
+                    </div>
+                </div>
+                <div class="editor-row">
+                    <div class="section gf-form-group">
+                            <div class="gr-form-inline">
+                                <div class="gf-form">
+                                    <h6 class="text-header">Display Options</h6>
                                 </div>
+                            </div>
+                            <div class="gr-form-inline">
+                                <div class="gf-form">
+                                    <label class="gf-form-label width-12">Output template </label>
+                                    <span class="mini-split"></span>
+                                    <textarea class="gf-form-input" style="width:100%" rows="5" ng-model="stat.display_template" data-ng-change="ctrl.render();" placeholder="Stat Display template. Supports html. `DEFAULT` gives default stat without any formatting"></textarea>
+                                </div>
+                            </div>
+                            <div class="gr-form-inline">
+                                <div class="gf-form">
+                                    <label class="gf-form-label width-12">Stat Width in %</label>
+                                    <span class="mini-split"></span>
+                                    <input type="text" placeholder="Between 10 to 100 (multiplies of 10)" class="gf-form-input width-12" ng-model="stat.statWidth" data-ng-change="ctrl.render();" />
+                                    <span class="mini-split"></span>
+                                    <label class="gf-form-label width-12">BG Color</label>
+                                    <span class="mini-split"></span>
+                                    <input type="text" placeholder="Background color" class="gf-form-input width-12" ng-model="stat.bgColor" data-ng-change="ctrl.render();" />
+                                    <span class="mini-split"></span>
+                                    <label class="gf-form-label width-12">Text Color</label>
+                                    <span class="mini-split"></span>
+                                    <input type="text" placeholder="Text Color" class="gf-form-input width-12" ng-model="stat.textColor" data-ng-change="ctrl.render();" />
+                                    <span class="mini-split"></span>
+                                </div>
+                            </div>                        
+                            <div class="gr-form-inline">
+                                    <div class="gf-form">                                          
+                                        <label class="gf-form-label width-12">Decimals</label>
+                                        <span class="mini-split"></span>
+                                        <select class="gf-form-input width-12" ng-model="stat.decimals" ng-options="f.value as f.text for f in ctrl.decimalValues" ng-change="ctrl.render()"></select>
+                                        <span class="mini-split"></span>
+                                        <label class="gf-form-label width-12">Format</label>
+                                        <span class="mini-split"></span>
+                                        <div class="gf-form-dropdown-typeahead width-12" ng-model="stat.format"
+                                            dropdown-typeahead2="ctrl.unitFormats" dropdown-typeahead-on-select="stat.setUnitFormat($subItem);ctrl.render();"></div>      
+                                    </div>
                             </div>
                     </div>
                 </div>
@@ -105,7 +115,7 @@
                     <div class="section gf-form-group">
                         <div class="gr-form-inline">
                             <div class="gf-form">
-                                <h6 class="text-header">Filters  <span class="btn btn-secondary btn-small" ng-click="stat.addFilter(); ctrl.render(); ">+</a></h6>
+                                <h6 class="text-header">Filters  / Where Conditions <span class="btn btn-secondary btn-small" ng-click="stat.addFilter(); ctrl.render(); ">+</a></h6>
                             </div>
                         </div>
                         <div class="gr-form-inline" ng-repeat="filter in stat.filters track by $index">

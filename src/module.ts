@@ -148,11 +148,27 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
   }
 }
 
-BoomSummaryCtl.prototype.render = function() {
-  let output = ``;
-  _.each(this.panel.stats, stat => {
-    output += stat.getOutputValue(this.masterdata);
-  });
+BoomSummaryCtl.prototype.render = function () {
+  let output = `<div class="container-fluid">
+    <div class="row">`;
+  if (this.ctrl.panel.repeatmode) {
+    let cols = _.uniq(_.flatMap(this.masterdata).filter(t => t.colname === this.ctrl.panel.repeatcolumn).map(t => t.value));
+    _.each(cols, col => {
+      output += `<div class="col-md-${_.min([+(this.ctrl.panel.repeatwidth), 12]) }" style="margin-bottom:20px;">`;
+      let mymasterdata = this.masterdata.filter(t => t.filter(t1 => t1.value === col && t1.colname === this.ctrl.panel.repeatcolumn).length === 1);
+      _.each(this.panel.stats, stat => {
+        output += stat.getOutputValue(mymasterdata);
+      });
+      output += "</div>";
+    });
+  } else {
+    _.each(this.panel.stats, stat => {
+      output += stat.getOutputValue(this.masterdata);
+    });
+  }
+  output += `</div>
+    </div>
+  `;
   this.elem.find("#boomsummary-panel").html(output);
 };
 

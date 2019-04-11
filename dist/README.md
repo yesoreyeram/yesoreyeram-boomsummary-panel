@@ -118,6 +118,13 @@ Numeric compare operators
 * `insiderange`
 * `outsiderange`
 
+## Repeater / Group By column
+
+If you need the summary panel to repeat for multiple values, you can use this option to repeat panel. With this approach, you don't need multiple queries. With a single query, you can group rows by specific column. More details available [here](https://github.com/yesoreyeram/yesoreyeram-boomsummary-panel/issues/1#issuecomment-482051979)
+
+![image](https://user-images.githubusercontent.com/153843/55948852-487c8980-5c49-11e9-80e0-da2be23acc2a.png)
+
+![image](https://user-images.githubusercontent.com/153843/55948873-4f0b0100-5c49-11e9-9dd4-3ddbca898edb.png)
 
 
 ## Auto Generate Stats

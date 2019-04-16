@@ -14,14 +14,14 @@
             <input
               type="checkbox"
               class="width-4"
-              ng-model="ctrl.panel.enable_repeater"
+              ng-model="ctrl.panel.repeatmode"
               ng-blur="ctrl.render()"
               ng-change="ctrl.render()"
               data-ng-change="ctrl.render();"
             />
           </div>
         </div>
-        <div class="gr-form-inline" ng-if="ctrl.panel.enable_repeater === true">
+        <div class="gr-form-inline" ng-if="ctrl.panel.repeatmode === true">
           <div class="gf-form">
             <label class="gf-form-label width-20">Repeat Column</label>
             <span class="mini-split"></span>
@@ -29,7 +29,7 @@
               type="text"
               placeholder="Field Name"
               class="gf-form-input width-12"
-              ng-model="ctrl.panel.repeater_column"
+              ng-model="ctrl.panel.repeatcolumn"
               bs-typeahead="ctrl.colnames"
               ng-blur="this.render()"
               data-min-length="0"
@@ -41,7 +41,7 @@
             <span class="mini-split"></span>
           </div>
         </div>
-        <div class="gr-form-inline" ng-if="ctrl.panel.enable_repeater === true">
+        <div class="gr-form-inline" ng-if="ctrl.panel.repeatmode === true">
           <div class="gf-form">
             <label class="gf-form-label width-20"
               >Repeat Width ( 1 to 12 ); 12 == 100%</label
@@ -51,7 +51,7 @@
               type="text"
               placeholder="Repeater width ( 1 to 12 ); 12 == 100%;"
               class="gf-form-input width-12"
-              ng-model="ctrl.panel.repeater_width"
+              ng-model="ctrl.panel.repeatwidth"
               ng-blur="this.render()"
               data-min-length="0"
               data-items="100"
@@ -66,7 +66,7 @@
               type="text"
               placeholder="20"
               class="gf-form-input width-12"
-              ng-model="ctrl.panel.repeater_margin_bottom"
+              ng-model="ctrl.panel.repeat_margin_bottom"
               ng-blur="this.render()"
               data-min-length="0"
               data-items="100"

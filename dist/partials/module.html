@@ -1,3 +1,9 @@
 <div class="boomsummary-panel table-panel-scroll" style="overflow:auto;">
-    <div id="boomsummary-panel"></div>
+  <div id="boomsummary-panel"></div>
+</div>
+<div ng-if="ctrl.panel.stats_groups.length === 0 && ctrl.masterdata.length === 0" style="text-align:center;padding-top:30px;">
+  No valid data received
+</div>
+<div ng-if="ctrl.masterdata.length > 0 && ctrl.panel.stats_groups.length === 0" style="text-align:center;padding-top:30px;">
+  You don't have any stats defined
 </div>

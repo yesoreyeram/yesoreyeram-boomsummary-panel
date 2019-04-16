@@ -1,0 +1,235 @@
+<div class="boomsummary-panel">
+    <div id="boomsummary-editor-stats">
+        <div class="edit-tab-with-sidemenu">
+            <aside class="edit-sidemenu-aside">
+                <ul class="edit-sidemenu">
+                    <li>
+                        <a>
+                            <h5 class="text-warning">Stats Group</h5>
+                        </a>
+                    </li>
+                    <li ng-repeat="stat in ctrl.panel.stats track by $index" ng-class="{active: ctrl.activeStatIndex === $index}">
+                        <a ng-click="ctrl.activeStatIndex = $index">
+                            {{ctrl.limitText(stat.title || stat.field || 'New Stat',12)}}
+                        </a>
+                    </li>
+                </ul>
+                <br/>
+                <br/>
+                <span class="pointer btn btn-small btn-success" ng-click="ctrl.addStat()" ng-if="ctrl.masterdata.length > 0 && ctrl.panel.stats.length > 0">
+                    <i class="fa fa-plus"></i>&nbsp;Add Normal stat
+                </span>
+                <br/>
+                <br/>
+                <span class="pointer btn btn-small btn-success" ng-click="ctrl.addStat('JUMBO')" ng-if="ctrl.masterdata.length > 0 && ctrl.panel.stats.length > 0">
+                    <i class="fa fa-plus"></i>&nbsp;Add Jumbo stat
+                </span>
+            </aside>
+            <div class="edit-tab-content" ng-if="ctrl.panel.stats.length === 0 && ctrl.masterdata.length === 0" style="text-align:center;padding-top:30px;">
+                <span class="btn btn-success boom-btn">You don't have any valid metrics yet</span>
+                <br/>
+                <br/>
+                <br/>
+                <p>
+                    Please check your queries / refresh metrics.
+                </p>
+            </div>
+            <div class="edit-tab-content" ng-if="ctrl.panel.stats.length === 0 && ctrl.masterdata.length > 0" style="text-align:center;padding-top:30px;">
+                <a class="btn btn-success boom-btn" ng-click="ctrl.autoGenerateStats();">Auto Generate all stats</a>
+                <a class="btn btn-success boom-btn" ng-click="ctrl.addStat();">Add First Normal Stat</a>
+                <a class="btn btn-success boom-btn" ng-click="ctrl.addStat('JUMBO');">Add First Jumbo Stat</a>
+            </div>
+            <div class="edit-tab-content" ng-repeat="stat in ctrl.panel.stats track by $index" ng-if="ctrl.activeStatIndex === $index">
+                <div class="editor-row">
+                    <div class="section gf-form-group">
+                        <div class="gr-form-inline">
+                            <div class="gf-form">
+                                <h6 class="text-header">Stats <span class="btn btn-secondary btn-small" ng-click="stat.addMetrics(); ctrl.render(); ">+</a></h6>
+                            </div>
+                        </div>
+                        <div class="gr-form-inline">
+                                <div class="gf-form">
+                                    <label class="gf-form-label width-6">SELECT</label>
+                                    <span class="mini-split"></span>
+                                    <label class="gf-form-label width-12">OF FIELD</label>
+                                    <span class="mini-split"></span>
+                                    <label class="gf-form-label width-12">AS</label>
+                                    <span class="mini-split"></span>
+                                    <label class="gf-form-label width-6">Decimals</label>
+                                    <span class="mini-split"></span>
+                                    <label class="gf-form-label width-12">Format</label>    
+                                    <span class="mini-split"></span>
+                                    <label class="gf-form-label width-24">Formatted / Raw / Title Reference</label>
+                                    <span class="mini-split"></span>
+                                </div>
+                        </div>
+                        <div class="gr-form-inline">
+                            <div class="gf-form">
+                                <select class="gf-form-input width-6" ng-model="stat.defaultStat" ng-options="f.value as f.text for f in ctrl.statTypes" ng-change="ctrl.render()"></select>
+                                <span class="mini-split"></span>
+                                <input type="text" placeholder="Field Name" class="gf-form-input width-12" ng-model="stat.field" 
+                                    bs-typeahead="ctrl.colnames" ng-blur="this.render()" data-min-length=0 data-items=100 ng-model-onblur
+                                    data-placement="right">
+                                <span class="mini-split"></span>
+                                <input type="text" placeholder="Title" class="gf-form-input width-12" ng-model="stat.title" data-ng-change="ctrl.render();" />
+                                <span class="mini-split"></span>
+                                <select class="gf-form-input width-6" ng-model="stat.decimals" ng-options="f.value as f.text for f in ctrl.decimalValues" ng-change="ctrl.render()"></select>
+                                <span class="mini-split"></span>
+                                <div class="gf-form-dropdown-typeahead width-12" ng-model="stat.format"
+                                dropdown-typeahead2="ctrl.unitFormats" dropdown-typeahead-on-select="stat.setUnitFormat($subItem);ctrl.render();"></div>      
+                                <span class="mini-split"></span>
+                                <label class="gf-form-label width-24">${default} / ${default_raw} / ${title}</label>
+                                <span class="mini-split"></span>
+                            </div>
+                        </div>
+                        <div class="gr-form-inline" ng-repeat="metric in stat.boom_metrics track by $index">
+                            <div class="gf-form">
+                                <select class="gf-form-input width-6" ng-model="metric.defaultStat" ng-options="f.value as f.text for f in ctrl.statTypes" ng-change="ctrl.render()"></select>
+                                <span class="mini-split"></span>
+                                <input type="text" placeholder="Field Name" class="gf-form-input width-12" ng-model="metric.field" 
+                                    bs-typeahead="ctrl.colnames" ng-blur="this.render()" data-min-length=0 data-items=100 ng-model-onblur
+                                    data-placement="right">
+                                <span class="mini-split"></span>
+                                <input type="text" placeholder="Title" class="gf-form-input width-12" ng-model="metric.title" data-ng-change="ctrl.render();" />
+                                <span class="mini-split"></span>
+                                <select class="gf-form-input width-6" ng-model="metric.decimals" ng-options="f.value as f.text for f in ctrl.decimalValues" ng-change="ctrl.render()"></select>
+                                <span class="mini-split"></span>
+                                <div class="gf-form-dropdown-typeahead width-12" ng-model="metric.format"
+                                dropdown-typeahead2="ctrl.unitFormats" dropdown-typeahead-on-select="metric.setUnitFormat($subItem);ctrl.render();"></div>      
+                                <span class="mini-split"></span>
+                                <label class="gf-form-label width-24" ng-bind="metric.getRefId();"></label>
+                                <span class="mini-split"></span>
+                                <span class="btn btn-warning" ng-click="stat.removeMetric($index); ctrl.render(); ">x</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="editor-row">
+                    <div class="section gf-form-group">
+                        <div class="gr-form-inline">
+                            <div class="gf-form">
+                                <h6 class="text-header">Filters  / Where Conditions <span class="btn btn-secondary btn-small" ng-click="stat.addFilter(); ctrl.render(); ">+</a></h6>
+                            </div>
+                        </div>
+                        <div class="gr-form-inline" ng-repeat="filter in stat.filters track by $index">
+                            <div class="gf-form">
+                                <div class="gf-form">
+                                    <label class="gf-form-label width-12">Field</label>                                    
+                                    <input type="text" placeholder="Field Name" class="gf-form-input width-12" ng-model="filter.field" 
+                                    bs-typeahead="ctrl.colnames" ng-blur="this.render()" data-min-length=0 data-items=100 ng-model-onblur
+                                    data-placement="right">
+                                    <span class="mini-split"></span>
+                                    <select class="gf-form-input width-12" ng-model="filter.operator" ng-options="f.value as f.text for f in ctrl.compareOperators" ng-change="ctrl.render()"></select>
+                                    <span class="mini-split"></span>
+                                    <input type="text" class="gf-form-input width-12" placeholder="{{filter.GetValue1Helper()}}" ng-model="filter.value" ng-blur="ctrl.render()" data-ng-change="ctrl.render();" />
+                                    <span class="mini-split"></span>
+                                    <input type="text" class="gf-form-input width-12"  ng-if="filter.CanShowValue2()" placeholder="{{filter.GetValue2Helper()}}" ng-model="filter.value2" ng-blur="ctrl.render()" data-ng-change="ctrl.render();" />                                    
+                                    <span class="mini-split"></span>
+                                    <button type="button" class="btn btn-danger btn-small" ng-click="stat.removeFilter($index); ctrl.render(); "><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="editor-row">
+                    <div class="section gf-form-group">
+                        <div class="gr-form-inline">
+                            <div class="gf-form">
+                                <h6 class="text-header">Conditonal Formats  <span class="btn btn-secondary btn-small" ng-click="stat.addConditonalFormat(); ctrl.render(); ">+</a></h6>
+                            </div>
+                        </div>
+                        <div class="gr-form-inline" ng-repeat="conditional_format in stat.conditional_formats track by $index">
+                            <div class="gf-form">
+                                <div class="gf-form">                                    
+                                    <label class="gf-form-label width-12">
+                                        <span ng-if="$index === 0">If Stat</span>
+                                        <span ng-if="$index !== 0">Else if Stat</span>
+                                    </label>
+                                    <span class="mini-split"></span>
+                                    <select class="gf-form-input width-12" ng-model="conditional_format.field" ng-options="f.value as f.text for f in ctrl.statTypes" ng-change="ctrl.render()"></select>
+                                    <span class="mini-split"></span>
+                                    <select class="gf-form-input width-12" ng-model="conditional_format.operator" ng-options="f.value as f.text for f in ctrl.compareOperators" ng-change="ctrl.render()"></select>
+                                    <span class="mini-split"></span>
+                                    <input type="text" class="gf-form-input width-12" placeholder="{{conditional_format.GetValue1Helper()}}" ng-model="conditional_format.value" ng-blur="ctrl.render()" data-ng-change="ctrl.render();" />
+                                    <span class="mini-split"></span>
+                                    <input type="text" class="gf-form-input width-12"  ng-if="conditional_format.CanShowValue2()" placeholder="{{conditional_format.GetValue2Helper()}}" ng-model="conditional_format.value2" ng-blur="ctrl.render()" data-ng-change="ctrl.render();" />                                    
+                                    <span class="mini-split" ng-if="$index !== 0" ></span>
+                                    <button class="btn btn-success btn-small" ng-if="$index !== 0" ng-click="stat.moveConditionalFormat('UP',$index)"><i class="fa fa-arrow-up"></i></button>
+                                    <span class="mini-split" ng-if="$index !== stat.conditional_formats.length -1"></span>
+                                    <button class="btn btn-success btn-small" ng-if="$index !== stat.conditional_formats.length -1" ng-click="stat.moveConditionalFormat('DOWN',$index)"><i class="fa fa-arrow-down"></i></button>
+                                    <span class="mini-split"></span>
+                                    <button type="button" class="btn btn-danger btn-small" ng-click="stat.removeConditionalFormat($index); ctrl.render(); "><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="gf-form">
+                                <div class="gf-form">                                    
+                                    <div class="width-12">&nbsp;</div>
+                                    <span class="mini-split"></span>
+                                    <input type="text" class="gf-form-input width-12" placeholder="BG Color" ng-model="conditional_format.bgColor" ng-blur="ctrl.render()" data-ng-change="ctrl.render();" />
+                                    <span class="mini-split"></span>
+                                    <input type="text" class="gf-form-input width-12" placeholder="Text Color" ng-model="conditional_format.textColor" ng-blur="ctrl.render()" data-ng-change="ctrl.render();" />
+                                    <span class="mini-split"></span>
+                                    <input type="text" class="gf-form-input width-26" placeholder="Template" ng-model="conditional_format.display_template" ng-blur="ctrl.render()" data-ng-change="ctrl.render();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="editor-row">
+                        <div class="section gf-form-group">
+                                <div class="gr-form-inline">
+                                    <div class="gf-form">
+                                        <h6 class="text-header">Display Options</h6>
+                                    </div>
+                                </div>
+                                <div class="gr-form-inline">
+                                    <div class="gf-form">
+                                        <label class="gf-form-label width-12">Output template </label>
+                                        <span class="mini-split"></span>
+                                        <textarea class="gf-form-input" style="width:100%" rows="5" ng-model="stat.display_template" data-ng-change="ctrl.render();" placeholder="Stat Display template. Supports html. `DEFAULT` gives default stat without any formatting"></textarea>
+                                    </div>
+                                </div>
+                                <div class="gr-form-inline">
+                                    <div class="gf-form">
+                                        <label class="gf-form-label width-12">Stat Width in %</label>
+                                        <span class="mini-split"></span>
+                                        <input type="text" placeholder="Between 10 to 100 (multiplies of 10)" class="gf-form-input width-12" ng-model="stat.statWidth" data-ng-change="ctrl.render();" />
+                                        <span class="mini-split"></span>
+                                        <label class="gf-form-label width-12">BG Color</label>
+                                        <span class="mini-split"></span>
+                                        <input type="text" placeholder="Background color" class="gf-form-input width-12" ng-model="stat.bgColor" data-ng-change="ctrl.render();" />
+                                        <span class="mini-split"></span>
+                                        <label class="gf-form-label width-12">Text Color</label>
+                                        <span class="mini-split"></span>
+                                        <input type="text" placeholder="Text Color" class="gf-form-input width-12" ng-model="stat.textColor" data-ng-change="ctrl.render();" />
+                                        <span class="mini-split"></span>
+                                    </div>
+                                </div>
+                        </div>
+                </div>          
+                <div class="editor-row">
+                    <div class="section gf-form-group">
+                        <div class="gr-form-inline">
+                            <div class="gf-form">
+                                <h6 class="text-header">Stat Management</h6>
+                            </div>
+                        </div>
+                        <div class="gr-form-inline">
+                            <div class="gf-form">
+                                <button class="btn btn-success btn-small boom-btn" ng-if="$index !== 0" ng-click="ctrl.moveStat('UP',$index)">
+                                    <i class="fa fa-arrow-up"></i>Move the Stat UP
+                                </button>
+                                <button class="btn btn-success btn-small boom-btn" ng-if="$index !== ctrl.panel.stats.length-1" ng-click="ctrl.moveStat('DOWN',$index)">
+                                    <i class="fa fa-arrow-down"></i>Move the Stat DOWN
+                                </button>
+                                <button class="btn btn-danger btn-small boom-btn" ng-click="ctrl.removeStat($index)">
+                                    <i class="fa fa-trash"></i> Remove this stat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,6 +11,7 @@ import { getFilteredDataFromMasterData } from "./../utils/AppUtils";
 import { getFormattedOutput } from "./../utils/GrafanaUtils";
 import { IBoomSummaryStat } from "../definitions/types";
 import { config } from "../config";
+import { BoomMetric } from "./BoomMetric";
 
 export class BoomSummaryStat implements IBoomSummaryStat {
   public field: string;
@@ -22,6 +23,7 @@ export class BoomSummaryStat implements IBoomSummaryStat {
   public textColor: string;
   public format: string;
   public decimals: string;
+  public boom_metrics : BoomMetric[];
   public filters: BoomSummaryFilter[];
   public conditional_formats: BoomSummaryConditionalFormats[];
   public addFilter;
@@ -35,6 +37,8 @@ export class BoomSummaryStat implements IBoomSummaryStat {
   public getTemplateWithTokensReplaced;
   public getOutputValue;
   public getMatchingCondition;
+  public addMetrics;
+  public removeMetric;
   constructor(options) {
     this.field = options.field || "Sample";
     this.title = options.title || this.field;
@@ -46,10 +50,23 @@ export class BoomSummaryStat implements IBoomSummaryStat {
     this.textColor = options.textColor || "";
     this.format = options.format || "none";
     this.decimals = options.decimals || "0";
+    this.boom_metrics = [];
     this.filters = options.filters || [];
     this.conditional_formats = options.conditional_formats || [];
   }
 }
+
+BoomSummaryStat.prototype.addMetrics = function(): void {
+  let newMetric = new BoomMetric({});
+  this.boom_metrics = this.boom_metrics || [];
+  this.boom_metrics.push(newMetric);
+};
+
+BoomSummaryStat.prototype.removeMetric = function(index: Number): void {
+  if (this.boom_metrics.length > 0) {
+    this.boom_metrics.splice(Number(index), 1);
+  }
+};
 
 BoomSummaryStat.prototype.addFilter = function(): void {
   let newfilter = new BoomSummaryFilter({

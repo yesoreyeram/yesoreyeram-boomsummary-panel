@@ -3,7 +3,7 @@
 import _ from "lodash";
 import kbn from "app/core/utils/kbn";
 
-export const getDecimalsForValue = function (value, _decimals) {
+export const getDecimalsForValue = function(value, _decimals) {
   if (_.isNumber(+_decimals)) {
     let o: Object = {
       decimals: _decimals,
@@ -50,18 +50,13 @@ export const getDecimalsForValue = function (value, _decimals) {
   return result;
 };
 
-export let getFormattedOutput = function (value, format, decimals) {
-  if (isNaN(value) || !value) {
-    return value;
-  }
-  else {
-    let decimalInfo: any = getDecimalsForValue(value, decimals || "0");
-    let formatFunc = kbn.valueFormats[format || "none"];
-    let value_formatted = formatFunc(
-      value,
-      decimalInfo.decimals,
-      decimalInfo.scaledDecimals
-    );
-    return String(value_formatted);
-  }
+export let getFormattedOutput = function(value, format, decimals) {
+  let decimalInfo: any = getDecimalsForValue(value, decimals || "0");
+  let formatFunc = kbn.valueFormats[format || "none"];
+  let value_formatted = formatFunc(
+    value,
+    decimalInfo.decimals,
+    decimalInfo.scaledDecimals
+  );
+  return String(value_formatted);
 };

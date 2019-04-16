@@ -1,7 +1,8 @@
 import _ from "lodash";
 
+
 export let replaceFontAwesomeTokens = function(value) {
-  let FA_TOKEN_PREFIX = "#{fa-";
+  let FA_TOKEN_PREFIX = "${fa-";
   let FA_TOKEN_SUFFIX = "}";
   let FA_DELIMITER = ",";
   if (!value) {
@@ -13,7 +14,7 @@ export let replaceFontAwesomeTokens = function(value) {
     .map(a => {
       if (a.startsWith(FA_TOKEN_PREFIX) && a.endsWith(FA_TOKEN_SUFFIX)) {
         let mytoken = a
-          .replace(/\#/g, "")
+          .replace(/\$/g, "")
           .replace(/\{/g, "")
           .replace(/\}/g, "");
         let icon = mytoken.split(FA_DELIMITER)[0];
@@ -61,7 +62,7 @@ export let replaceFontAwesomeTokens = function(value) {
 };
 
 export let replaceImageTokens = function(value) {
-  let IMG_TOKEN_PREFIX = "#{img-";
+  let IMG_TOKEN_PREFIX = "${img-";
   let IMG_TOKEN_SUFFIX = "}";
   let IMG_DELIMITER = ",";
   if (!value) {

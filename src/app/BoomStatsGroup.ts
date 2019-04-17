@@ -134,6 +134,7 @@ BoomStat.prototype.setUnitFormat = function (format: any): void {
 };
 
 export class BoomStatsGroup {
+    public title: string;
     public stats: BoomStat[];
     public statWidth: String;
     public bgColor: string;
@@ -151,15 +152,13 @@ export class BoomStatsGroup {
     public moveConditionalFormat;
     public getoutput;
     constructor(options) {
+        this.title = options.title || "";
         this.stats = options.stats || [];
         this.statWidth = options.statWidth || "100";
         this.bgColor = options.bgColor || "";
         this.textColor = options.textColor || "";
         this.templateType = options.templateType || "default";
-        this.customTemplate = options.customTemplate || `<div style="width:100%;float:left;border:1px solid black;border-width:1px 1px 0px 1px">
-            <div style="width:100%;float:left;padding:10px;text-align:center;">#{default}</div>
-        </div>
-        <div style="width:100%;float:left;border:1px solid black;border-width:1px 1px 0px 1px">
+        this.customTemplate = options.customTemplate || `<div style="width:100%;float:left;border:1px solid black;">
             <div style="width:50%;float:left;padding:10px;">Total Records</div>
             <div style="width:50%;float:left;padding:10px;">#{count}</div>
         </div>`;
@@ -357,20 +356,20 @@ BoomStatsGroup.prototype.getoutput = function (masterdata): string {
         let outTemplate = filteredData.length + " records found";
         switch (this.templateType) {
             case "default":
-                outTemplate = `<div style="width:100%;float:left;border:1px solid black;border-width:1px 1px 0px 1px">
+                outTemplate = `<div style="width:100%;float:left;border:1px solid black;">
                                     <div style="width:50%;float:left;padding:10px;">#{title}</div>
                                     <div style="width:50%;float:left;padding:10px;">#{default}</div>
                                 </div>`;
                 break;
             case "titleonly":
-                outTemplate = `<div style="width:100%;float:left;border:1px solid black;border-width:1px 1px 0px 1px">
+                outTemplate = `<div style="width:100%;float:left;border:1px solid black;">
                                     <div style="width:100%;float:left;padding:10px;text-align:center;">#{default}</div>
                                 </div>`;
                 break;
             case "auto":
                 outTemplate = ``;
                 _.each(this.stats, stat => {
-                    outTemplate += `<div style="width:100%;float:left;border:1px solid black;border-width:1px 1px 0px 1px">
+                    outTemplate += `<div style="width:100%;float:left;border:1px solid black;">
                     <div style="width:50%;float:left;padding:10px;">#{${stat.stat_type},${stat.field},title}</div>
                     <div style="width:50%;float:left;padding:10px;">#{${stat.stat_type},${stat.field}}</div>
                 </div>`
@@ -380,7 +379,7 @@ BoomStatsGroup.prototype.getoutput = function (masterdata): string {
                 outTemplate = this.customTemplate;
                 break;
             case "jumbo":
-                outTemplate = `<div style="width:100%;float:left;text-align:center;border:1px solid black;border-width:1px 1px 0px 1px">
+                outTemplate = `<div style="width:100%;float:left;text-align:center;border:1px solid black;">
                                     <br/>
                                     <h5>\#{title}</h5>
                                     <br/>
@@ -389,7 +388,7 @@ BoomStatsGroup.prototype.getoutput = function (masterdata): string {
                                 </div>`
                 break;
             case "jumbo_without_title":
-                outTemplate = `<div style="width:100%;float:left;text-align:center;border:1px solid black;border-width:1px 1px 0px 1px">
+                outTemplate = `<div style="width:100%;float:left;text-align:center;border:1px solid black;">
                                     <br/>
                                     <h1>\#{default}</h1>
                                     <br/>

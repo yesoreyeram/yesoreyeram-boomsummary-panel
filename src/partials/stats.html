@@ -17,12 +17,7 @@
         <br />
         <br />
         <span class="pointer btn btn-small btn-success" ng-click="ctrl.addStatsGroup()" ng-if="ctrl.masterdata.length > 0 && ctrl.panel.stats_groups.length > 0">
-          <i class="fa fa-plus"></i>&nbsp;Add Normal stats group
-        </span>
-        <br />
-        <br />
-        <span class="pointer btn btn-small btn-success" ng-click="ctrl.addStatsGroup('JUMBO')" ng-if="ctrl.masterdata.length > 0 && ctrl.panel.stats_groups.length > 0">
-          <i class="fa fa-plus"></i>&nbsp;Add JUMBO stats group
+          <i class="fa fa-plus"></i>&nbsp;Add Stats Group with one column
         </span>
         <br />
         <br />
@@ -40,11 +35,18 @@
         </p>
       </div>
       <div class="edit-tab-content" ng-if="ctrl.panel.stats_groups.length === 0 && ctrl.masterdata.length > 0" style="text-align:center;padding-top:30px;">
-        <a class="btn btn-success boom-btn" ng-click="ctrl.addStatsGroup();">Add First Stats Group</a>
-        <a class="btn btn-success boom-btn" ng-click="ctrl.addStatsGroup('JUMBO');">Add JUMBO Stats Group</a>
-        <a class="btn btn-success boom-btn" ng-click="ctrl.addStatsGroup('JUMBO_WITHOUT_TITLE');">Add JUMBO Stats Group without title</a>
+        <a class="btn btn-success boom-btn" ng-click="ctrl.addStatsGroup();">Add Stats Group with one column</a>
       </div>
       <div class="edit-tab-content" ng-repeat="stats_group in ctrl.panel.stats_groups track by $index" ng-if="ctrl.activeStatIndex === $index">
+          <div class="editor-row">
+              <div class="section gf-form-group">
+                <div class="gr-form-inline">
+                  <div class="gf-form">
+                      <input type="text" style="border:none;background:transparent;width:100%;" class="gf-form-input" ng-model="stats_group.title">
+                  </div>
+                </div>
+              </div>
+            </div>
         <div class="editor-row">
           <div class="section gf-form-group">
             <div class="gr-form-inline">
@@ -161,6 +163,10 @@
                     <span class="mini-split"></span>
                     <input type="text" placeholder="Between 10 to 100 (multiplies of 10)" class="gf-form-input width-12" ng-model="stats_group.statWidth" data-ng-change="ctrl.render();" />
                     <span class="mini-split"></span>
+                </div>
+              </div>
+              <div class="gr-form-inline">
+                <div class="gf-form">
                     <label class="gf-form-label width-12">Default BG Color</label>
                     <span class="mini-split"></span>
                     <input type="text" placeholder="Background color" class="gf-form-input width-12" ng-model="stats_group.bgColor" data-ng-change="ctrl.render();" />

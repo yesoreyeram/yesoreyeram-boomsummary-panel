@@ -85,13 +85,6 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
         let stats: any[] = [];
         if (this.masterdata && this.masterdata.length > 0) {
             if (this.masterdata[0].length > this.panel.stats_groups.length && this.masterdata[0][this.panel.stats_groups.length].colname) {
-                if (this.ctrl.panel.enable_repeater && this.panel.stats_groups.length == 0 && ["jumbo", "jumbo_without_title"].indexOf(templateType) < 0) {
-                    templateType = "auto";
-                    stats.push(new BoomStat({
-                        field: this.ctrl.panel.repeater_column,
-                        title: this.ctrl.panel.repeater_column,
-                    }));
-                }
                 stats.push(new BoomStat({
                     field: this.masterdata[0][this.panel.stats_groups.length].colname,
                     title: this.masterdata[0][this.panel.stats_groups.length].colname
@@ -99,6 +92,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
             }
         }
         this.panel.stats_groups.push(new BoomStatsGroup({
+            title: `Summary ${this.panel.stats_groups.length + 1}`,
             bgColor: "green",
             templateType: templateType || "default",
             textColor: "white",

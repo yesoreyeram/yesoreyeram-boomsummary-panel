@@ -30,5 +30,5 @@ export interface IBoomStats {
     public mean: Number;
     public min: Number;
     public max: Number;
-    public first: string;
+    public random: string;
 }

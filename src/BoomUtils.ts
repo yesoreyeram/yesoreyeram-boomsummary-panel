@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-export let replaceFontAwesomeTokens = function(value) {
+export let replaceFontAwesomeTokens = function (value) {
   let FA_TOKEN_PREFIX = "#{fa-";
   let FA_TOKEN_SUFFIX = "}";
   let FA_DELIMITER = ",";
@@ -60,7 +60,7 @@ export let replaceFontAwesomeTokens = function(value) {
   return value;
 };
 
-export let replaceImageTokens = function(value) {
+export let replaceImageTokens = function (value) {
   let IMG_TOKEN_PREFIX = "#{img-";
   let IMG_TOKEN_SUFFIX = "}";
   let IMG_DELIMITER = ",";
@@ -96,7 +96,7 @@ export let replaceImageTokens = function(value) {
   return value;
 };
 
-export let replaceTokens = function(value) {
+export let replaceTokens = function (value) {
   if (!value) {
     return value;
   }
@@ -106,7 +106,7 @@ export let replaceTokens = function(value) {
   return value;
 };
 
-export let getStatsFromArrayOfObjects = function(arrayOfObjects) {
+export let getStatsFromArrayOfObjects = function (arrayOfObjects) {
   let statsgroup: any = {};
   statsgroup.count = arrayOfObjects.length;
   statsgroup.uniquecount = _.uniq(arrayOfObjects).length;
@@ -114,11 +114,12 @@ export let getStatsFromArrayOfObjects = function(arrayOfObjects) {
   statsgroup.mean = _.mean(arrayOfObjects.map(s => +s));
   statsgroup.min = _.min(arrayOfObjects.map(s => +s));
   statsgroup.max = _.max(arrayOfObjects.map(s => +s));
+  statsgroup.random = _.first(arrayOfObjects);
   statsgroup.first = _.first(arrayOfObjects);
   return statsgroup;
 };
 
-export let getStatFromStatsGroup = function(statsGroup, statName) {
+export let getStatFromStatsGroup = function (statsGroup, statName) {
   statName = statName
     .toLowerCase()
     .trim()
@@ -127,7 +128,7 @@ export let getStatFromStatsGroup = function(statsGroup, statName) {
   return statsGroup[statName] || null;
 };
 
-export let isMatch = function(ov, op, cv1, cv2): boolean {
+export let isMatch = function (ov, op, cv1, cv2): boolean {
   let returnvalue = false;
   op = op
     .toLowerCase()

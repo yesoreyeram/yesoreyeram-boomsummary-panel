@@ -107,7 +107,7 @@ export class BoomSummaryConditionalFormats extends BoomFilter implements IBoomFi
     constructor(options) {
         super(options);
         this.custom_css_class = options.custom_css_class || "";
-        this.stat_type = options.stat_type || "first";
+        this.stat_type = options.stat_type || "random";
         this.bgColor = options.bgColor || "";
         this.textColor = options.textColor || "";
     }
@@ -116,15 +116,13 @@ export class BoomSummaryConditionalFormats extends BoomFilter implements IBoomFi
 export class BoomStat {
     public field;
     public stat_type;
-    public format_as;
     public decimals;
     public unit;
     public setUnitFormat;
     public title;
     constructor(options) {
         this.field = options.field || "Sample";
-        this.stat_type = options.stat_type || "first";
-        this.format_as = options.format_as || "string";
+        this.stat_type = options.stat_type || "random";
         this.decimals = options.decimals || "0";
         this.unit = options.unit || "none";
         this.title = options.title || this.stat_type + " of " + this.field || "Detail";
@@ -198,7 +196,7 @@ BoomSummaryGroup.prototype.removeFilter = function (index: Number): void {
 
 BoomSummaryGroup.prototype.addConditonalFormat = function (): void {
     let operator = "equals";
-    let stat_type = "first";
+    let stat_type = "random";
     let field = "Sample";
     let value = "Something";
     if (this.stats && this.stats.length > 0 && this.conditional_formats.length === 0) {
@@ -249,7 +247,7 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
     _.each(stats, (stat, index) => {
         let mystatsObject: IBoomStats = {
             count: NaN,
-            first: "",
+            random: "",
             max: NaN,
             mean: NaN,
             min: NaN,
@@ -273,7 +271,7 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
             output = output.replace(new RegExp("#{mean}", "gi"), mystatsObject.mean);
             output = output.replace(new RegExp("#{min}", "gi"), mystatsObject.min);
             output = output.replace(new RegExp("#{max}", "gi"), mystatsObject.max);
-            output = output.replace(new RegExp("#{first}", "gi"), mystatsObject.first);
+            output = output.replace(new RegExp("#{randmon}", "gi"), mystatsObject.random);
             output = output.replace(new RegExp("#{title}", "gi"), stat.title || `${stat.stat_type} of ${stat.field}`);
             output = output.replace(new RegExp("#{default}", "gi"), getFormattedOutput(mystatsObject[stat.stat_type], stat.unit, stat.decimals));
         }
@@ -291,7 +289,7 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
     _.each(colnames, (colname, index) => {
         let mystatsObject: IBoomStats = {
             count: NaN,
-            first: "",
+            random: "",
             max: NaN,
             mean: NaN,
             min: NaN,
@@ -310,7 +308,7 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
         }
         if (index === 0) {
             output = output.replace(new RegExp("#{title}", "gi"), `${colname}`);
-            output = output.replace(new RegExp("#{default}", "gi"), getFormattedOutput(mystatsObject.first, "none", "0"));
+            output = output.replace(new RegExp("#{default}", "gi"), getFormattedOutput(mystatsObject.random, "none", "0"));
         }
         output = output.replace(new RegExp("#{count," + colname + "}", "gi"), mystatsObject.count);
         output = output.replace(new RegExp("#{uniquecount," + colname + "}", "gi"), mystatsObject.uniquecount);
@@ -318,21 +316,21 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
         output = output.replace(new RegExp("#{mean," + colname + "}", "gi"), mystatsObject.mean);
         output = output.replace(new RegExp("#{min," + colname + "}", "gi"), mystatsObject.min);
         output = output.replace(new RegExp("#{max," + colname + "}", "gi"), mystatsObject.max);
-        output = output.replace(new RegExp("#{first," + colname + "}", "gi"), mystatsObject.first);
+        output = output.replace(new RegExp("#{random," + colname + "}", "gi"), mystatsObject.random);
         output = output.replace(new RegExp("#{count," + colname + ",raw}", "gi"), mystatsObject.count);
         output = output.replace(new RegExp("#{uniquecount," + colname + ",raw}", "gi"), mystatsObject.uniquecount);
         output = output.replace(new RegExp("#{sum," + colname + ",raw}", "gi"), mystatsObject.sum);
         output = output.replace(new RegExp("#{mean," + colname + ",raw}", "gi"), mystatsObject.mean);
         output = output.replace(new RegExp("#{min," + colname + ",raw}", "gi"), mystatsObject.min);
         output = output.replace(new RegExp("#{max," + colname + ",raw}", "gi"), mystatsObject.max);
-        output = output.replace(new RegExp("#{first," + colname + ",raw}", "gi"), mystatsObject.first);
+        output = output.replace(new RegExp("#{random," + colname + ",raw}", "gi"), mystatsObject.random);
         output = output.replace(new RegExp("#{count," + colname + ",title}", "gi"), `Count of ${colname}`);
         output = output.replace(new RegExp("#{uniquecount," + colname + ",title}", "gi"), `Unique Count of ${colname}`);
         output = output.replace(new RegExp("#{sum," + colname + ",title}", "gi"), `Sum of ${colname}`);
         output = output.replace(new RegExp("#{mean," + colname + ",title}", "gi"), `Mean of ${colname}`);
         output = output.replace(new RegExp("#{min," + colname + ",title}", "gi"), `min of ${colname}`);
         output = output.replace(new RegExp("#{max," + colname + ",title}", "gi"), `Max of ${colname}`);
-        output = output.replace(new RegExp("#{first," + colname + ",title}", "gi"), `First ${colname}`);
+        output = output.replace(new RegExp("#{random," + colname + ",title}", "gi"), `Random ${colname}`);
     });
     output = output.replace(new RegExp("#{count}", "gi"), data.length);
     return output;
@@ -346,7 +344,7 @@ let getMatchingCondition = function (data, conditional_formats) {
     let matching_conditions = conditional_formats.filter(condition => {
         let mystatsObject: IBoomStats = {
             count: NaN,
-            first: "",
+            random: "",
             max: NaN,
             mean: NaN,
             min: NaN,
@@ -372,7 +370,15 @@ BoomSummaryGroup.prototype.getoutput = function (masterdata): string {
     if (masterdata.length === 0) {
         return "<div style='text-align:center;'>No Data</div>";
     } else {
-        let filteredData = getFilteredDataFromMasterData(masterdata, this.filters);
+        let filteredData = getFilteredDataFromMasterData(masterdata, this.filters);        
+        let matching_condition = getMatchingCondition(filteredData, this.conditional_formats);
+        let bgColor = matching_condition && matching_condition.bgColor ? matching_condition.bgColor : this.bgColor;
+        let textColor = matching_condition && matching_condition.textColor ? matching_condition.textColor : this.textColor;
+        let custom_css_class = matching_condition && matching_condition.custom_css_class ? matching_condition.custom_css_class : "not_applicable";
+        if (custom_css_class !== "not_applicable") {
+            bgColor = "not_applicable";
+            textColor = "not_applicable";
+        }
         let outTemplate = filteredData.length + " records found";
         switch (this.templateType) {
             case "titleonly":
@@ -411,17 +417,9 @@ BoomSummaryGroup.prototype.getoutput = function (masterdata): string {
             default:
                 outTemplate = this.customTemplate;
                 break;
-        }        
-        if (this.templateType === "auto" && this.stats.length === 0) {
-            outTemplate = `<div style="background:red;">Oops. You don't have any stats defined for this summary group</div>`;
         }
-        let matching_condition = getMatchingCondition(filteredData, this.conditional_formats);
-        let bgColor = matching_condition && matching_condition.bgColor ? matching_condition.bgColor : this.bgColor;
-        let textColor = matching_condition && matching_condition.textColor ? matching_condition.textColor : this.textColor;
-        let custom_css_class = matching_condition && matching_condition.custom_css_class ? matching_condition.custom_css_class : "not_applicable";
-        if (custom_css_class !== "not_applicable") {
-            bgColor = "not_applicable";
-            textColor = "not_applicable";
+        if ((this.templateType === "auto" || this.templateType === "jumbo" || this.templateType === "jumbo_without_title" || this.templateType === "titleonly") && this.stats.length === 0) {
+            outTemplate = `<div style="background:red;">Oops. You don't have any stats defined for this summary group</div>`;
         }
         let output_with_statsReplaced = replaceStatsFromTemplate(outTemplate, this.stats, filteredData);
         let output_with_tokensreplaced = replaceFATokens(output_with_statsReplaced);

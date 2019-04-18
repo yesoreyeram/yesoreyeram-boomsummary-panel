@@ -57,19 +57,19 @@ export let config = {
     },
     plugin_id: plugin_id,
     statTypes: [
-        { text: "first", value: "first" },
-        { text: "min", value: "min" },
-        { text: "max", value: "max" },
-        { text: "mean", value: "mean" },
-        { text: "sum", value: "sum" },
-        { text: "count", value: "count" },
-        { text: "uniquecount", value: "uniquecount" }
+        { text: "Random", value: "random" },
+        { text: "Min", value: "min" },
+        { text: "Max", value: "max" },
+        { text: "Mean", value: "mean" },
+        { text: "Sum", value: "sum" },
+        { text: "Count", value: "count" },
+        { text: "Unique Count", value: "uniquecount" }
     ],
     templateTypes: [
         { text: "Auto Template", value: "auto" },
         { text: "Jumbo Stat", value: "jumbo" },
-        { text: "Jumbo Stat without title", value: "jumbo_without_title" },
-        { text: "Title only", value: "titleonly" },
+        { text: "Jumbo Stat w/o title", value: "jumbo_without_title" },
+        { text: "Value only", value: "titleonly" },
         { text: "Custom", value: "custom" },
     ],
     ctrl_width : [

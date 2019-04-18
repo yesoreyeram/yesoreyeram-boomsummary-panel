@@ -197,9 +197,26 @@ BoomStatsGroup.prototype.removeFilter = function (index: Number): void {
 };
 
 BoomStatsGroup.prototype.addConditonalFormat = function (): void {
+    let operator = "equals";
+    let stat_type = "first";
+    let field = "Sample";
+    let value = "Something";
+    if (this.stats && this.stats.length > 0 && this.conditional_formats.length === 0) {
+        operator = "<=";
+        stat_type = "count";
+        field = this.stats[0].field || "Sample";
+        value = "0";
+    } else if (this.conditional_formats.length > 0) {
+        operator = this.conditional_formats[this.conditional_formats.length - 1].operator;
+        stat_type = this.conditional_formats[this.conditional_formats.length - 1].stat_type;
+        field = this.conditional_formats[this.conditional_formats.length - 1].field;
+        value = this.conditional_formats[this.conditional_formats.length - 1].value;
+    }
     let new_conditional_formatter = new BoomSummaryConditionalFormats({
-        operator: "equals",
-        stat_type: "first"
+        field,
+        operator,
+        stat_type,
+        value
     });
     this.conditional_formats = this.conditional_formats || [];
     this.conditional_formats.push(new_conditional_formatter);
@@ -400,7 +417,7 @@ BoomStatsGroup.prototype.getoutput = function (masterdata): string {
         let custom_css_class = matching_condition && matching_condition.custom_css_class ? matching_condition.custom_css_class : "not_applicable";
         if (custom_css_class !== "not_applicable") {
             bgColor = "not_applicable";
-            textColor= "not_applicable";
+            textColor = "not_applicable";
         }
         let output_with_statsReplaced = replaceStatsFromTemplate(outTemplate, this.stats, filteredData);
         let output_with_tokensreplaced = replaceFATokens(output_with_statsReplaced);

@@ -10,6 +10,10 @@
   min-width: 200px;
   text-transform: lowercase; }
 
+.boomsummary-panel .boom-btn-mini {
+  padding: 10px;
+  margin-right: 10px; }
+
 .boomsummary-panel h6.text-header {
   padding: 0 0 10px 0;
   font-weight: bolder; }

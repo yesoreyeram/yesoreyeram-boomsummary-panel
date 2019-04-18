@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { IMasterData, IBoomFilter, IBoomSummaryConditionalFormats, IBoomStatsGroup } from "./types";
+import { IMasterData, IBoomFilter, IBoomSummaryConditionalFormats, IBoomSummaryGroup } from "./types";
 import { getFilteredDataFromMasterData } from "./AppUtils";
 import { getStatsFromArrayOfObjects, isMatch } from "./BoomUtils";
 import { getFormattedOutput } from "./GrafanaUtils";
@@ -135,7 +135,7 @@ BoomStat.prototype.setUnitFormat = function (format: any): void {
     this.unit = format && format.value ? format.value : "none";
 };
 
-export class BoomStatsGroup {
+export class BoomSummaryGroup {
     public title: string;
     public stats: BoomStat[];
     public statWidth: String;
@@ -169,19 +169,19 @@ export class BoomStatsGroup {
     }
 }
 
-BoomStatsGroup.prototype.addStat = function (): void {
+BoomSummaryGroup.prototype.addStat = function (): void {
     let newMetric = new BoomStat({});
     this.stats = this.stats || [];
     this.stats.push(newMetric);
 };
 
-BoomStatsGroup.prototype.removeStat = function (index: Number): void {
+BoomSummaryGroup.prototype.removeStat = function (index: Number): void {
     if (this.stats.length > 0) {
         this.stats.splice(Number(index), 1);
     }
 };
 
-BoomStatsGroup.prototype.addFilter = function (): void {
+BoomSummaryGroup.prototype.addFilter = function (): void {
     let newfilter = new BoomSummaryFilter({
         field: "Sample",
         operator: "equals"
@@ -190,13 +190,13 @@ BoomStatsGroup.prototype.addFilter = function (): void {
     this.filters.push(newfilter);
 };
 
-BoomStatsGroup.prototype.removeFilter = function (index: Number): void {
+BoomSummaryGroup.prototype.removeFilter = function (index: Number): void {
     if (this.filters.length > 0) {
         this.filters.splice(Number(index), 1);
     }
 };
 
-BoomStatsGroup.prototype.addConditonalFormat = function (): void {
+BoomSummaryGroup.prototype.addConditonalFormat = function (): void {
     let operator = "equals";
     let stat_type = "first";
     let field = "Sample";
@@ -222,13 +222,13 @@ BoomStatsGroup.prototype.addConditonalFormat = function (): void {
     this.conditional_formats.push(new_conditional_formatter);
 };
 
-BoomStatsGroup.prototype.removeConditionalFormat = function (index: Number): void {
+BoomSummaryGroup.prototype.removeConditionalFormat = function (index: Number): void {
     if (this.conditional_formats.length > 0) {
         this.conditional_formats.splice(Number(index), 1);
     }
 };
 
-BoomStatsGroup.prototype.moveConditionalFormat = function (direction: string, index: Number): void {
+BoomSummaryGroup.prototype.moveConditionalFormat = function (direction: string, index: Number): void {
     let tempElement = this.conditional_formats[Number(index)];
     if (direction === "UP") {
         this.conditional_formats[Number(index)] = this.conditional_formats[
@@ -247,7 +247,7 @@ BoomStatsGroup.prototype.moveConditionalFormat = function (direction: string, in
 let replaceStatsFromTemplate = function (template, stats, data): string {
     let output = template;
     _.each(stats, (stat, index) => {
-        let mystatsObject: IBoomStatsGroup = {
+        let mystatsObject: IBoomSummaryGroup = {
             count: NaN,
             first: "",
             max: NaN,
@@ -289,7 +289,7 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
     });
     colnames = _.uniq(colnames);
     _.each(colnames, (colname, index) => {
-        let mystatsObject: IBoomStatsGroup = {
+        let mystatsObject: IBoomSummaryGroup = {
             count: NaN,
             first: "",
             max: NaN,
@@ -343,7 +343,7 @@ let replaceFATokens = function (template): string {
 
 let getMatchingCondition = function (data, conditional_formats) {
     let matching_conditions = conditional_formats.filter(condition => {
-        let mystatsObject: IBoomStatsGroup = {
+        let mystatsObject: IBoomSummaryGroup = {
             count: NaN,
             first: "",
             max: NaN,
@@ -367,7 +367,7 @@ let getMatchingCondition = function (data, conditional_formats) {
     return matching_conditions && matching_conditions.length > 0 ? _.first(matching_conditions) : null;
 };
 
-BoomStatsGroup.prototype.getoutput = function (masterdata): string {
+BoomSummaryGroup.prototype.getoutput = function (masterdata): string {
     if (masterdata.length === 0) {
         return "<div style='text-align:center;'>No Data</div>";
     } else {

@@ -23,7 +23,7 @@ export interface IBoomSummaryConditionalFormats {
     public textColor: string;
     public custom_css_class: string;
 }
-export interface IBoomStatsGroup {
+export interface IBoomSummaryGroup {
     public count: Number;
     public uniquecount: Number;
     public sum: Number;

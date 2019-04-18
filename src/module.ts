@@ -3,7 +3,7 @@
 import _ from "lodash";
 import { MetricsPanelCtrl, loadPluginCss } from "app/plugins/sdk";
 import kbn from "app/core/utils/kbn";
-import { BoomStatsGroup, BoomStat } from "./BoomStatsGroup";
+import { BoomSummaryGroup, BoomStat } from "./BoomSummaryGroup";
 import { buildMasterData } from "./DataHandler";
 import { IBoomSummaryCtl } from "./types";
 import { config } from "./Config";
@@ -40,7 +40,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
     }
     private updatePrototypes(): void {
         this.panel.stats_groups.map(stats_group => {
-            Object.setPrototypeOf(stats_group, BoomStatsGroup.prototype);
+            Object.setPrototypeOf(stats_group, BoomSummaryGroup.prototype);
             stats_group.stats.map(stat => {
                 Object.setPrototypeOf(stat, BoomStat.prototype);
             });
@@ -73,7 +73,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
         this.attrs = attrs;
         this.ctrl = ctrl;
     }
-    public addStatsGroup(statgroupType): void {
+    public addSummaryGroup(statgroupType): void {
         this.panel.stats_groups = this.panel.stats_groups || [];
         let templateType = "auto";
         if (statgroupType && statgroupType.toUpperCase() === "JUMBO") {
@@ -90,7 +90,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
                 }));
             }
         }
-        this.panel.stats_groups.push(new BoomStatsGroup({
+        this.panel.stats_groups.push(new BoomSummaryGroup({
             bgColor: "green",
             stats,
             templateType: templateType || "auto",
@@ -100,12 +100,12 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
         this.activeStatIndex = this.panel.stats_groups.length - 1;
         this.render();
     }
-    public removeStatsGroup(index: number): void {
+    public removeSummaryGroup(index: number): void {
         this.panel.stats_groups.splice(index, 1);
         this.activeStatIndex = this.panel.stats_groups && this.panel.stats_groups.length > 0 ? this.panel.stats_groups.length - 1 : -1;
         this.render();
     }
-    public moveStatsGroup(direction: string, index: Number): void {
+    public moveSummaryGroup(direction: string, index: Number): void {
         let tempElement = this.panel.stats_groups[Number(index)];
         if (direction === "UP") {
             this.panel.stats_groups[Number(index)] = this.panel.stats_groups[Number(index) - 1];
@@ -119,7 +119,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
         }
         this.render();
     }
-    public removeAllStatsGroups() {
+    public removeAllSummaryGroups() {
         this.panel.stats_groups = [];
         this.render();
     }

@@ -17,8 +17,7 @@
               ng-model="ctrl.panel.enable_repeater"
               ng-blur="ctrl.render()"
               ng-change="ctrl.render()"
-              data-ng-change="ctrl.render();"
-            />
+              data-ng-change="ctrl.render();" />
           </div>
         </div>
         <div class="gr-form-inline" ng-if="ctrl.panel.enable_repeater === true">
@@ -36,16 +35,13 @@
               data-items="100"
               ng-model-onblur
               data-placement="right"
-              data-ng-change="ctrl.render();"
-            />
+              data-ng-change="ctrl.render();" />
             <span class="mini-split"></span>
           </div>
         </div>
         <div class="gr-form-inline" ng-if="ctrl.panel.enable_repeater === true">
           <div class="gf-form">
-            <label class="gf-form-label width-20"
-              >Repeat Width ( 1 to 12 ); 12 == 100%</label
-            >
+            <label class="gf-form-label width-20">Repeat Width ( 1 to 12 ); 12 == 100%</label>
             <span class="mini-split"></span>
             <input
               type="text"
@@ -57,8 +53,7 @@
               data-items="100"
               ng-model-onblur
               data-placement="right"
-              data-ng-change="ctrl.render();"
-            />
+              data-ng-change="ctrl.render();" />
             <span class="mini-split"></span>
             <label class="gf-form-label width-20">Margin Bottom in pixel</label>
             <span class="mini-split"></span>
@@ -72,8 +67,7 @@
               data-items="100"
               ng-model-onblur
               data-placement="right"
-              data-ng-change="ctrl.render();"
-            />
+              data-ng-change="ctrl.render();" />
             <span class="mini-split"></span>
           </div>
         </div>
@@ -91,6 +85,19 @@
             <label class="gf-form-label width-20">CSS</label>
             <span class="mini-split"></span>
             <textarea class="gf-form-input width-24" style="width:100%" rows="5" ng-model="ctrl.panel.custom_css" data-ng-change="ctrl.render();"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="editor-row">
+      <div class="section gf-form-group">
+        <div class="gr-form-line">
+          <div class="gf-form" style="text-align: center;">
+            <br />
+            <br />
+            <div class="edit-tab-content" ng-click="ctrl.removeAllSummaryGroups()" ng-if="ctrl.masterdata.length > 0 && ctrl.panel.stats_groups.length > 0" style="text-align:center;padding-top:30px;">
+              <a class="btn btn-danger boom-btn" ng-click="ctrl.removeAllSummaryGroups();"><i class="fa fa-trash"></i>&nbsp;Remove All Stats Groups</a>
+            </div>
           </div>
         </div>
       </div>

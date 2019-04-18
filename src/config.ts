@@ -71,5 +71,11 @@ export let config = {
         { text: "Jumbo Stat without title", value: "jumbo_without_title" },
         { text: "Title only", value: "titleonly" },
         { text: "Custom", value: "custom" },
+    ],
+    ctrl_width : [
+        { text: "100%", value : "12"},
+        { text: "50%", value : "6"},
+        { text: "33%", value : "4"},
+        { text: "25%", value : "3"}
     ]
 };

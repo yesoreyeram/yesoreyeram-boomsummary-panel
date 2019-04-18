@@ -24,6 +24,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
     public decimalValues = config.decimalValues;
     public format_as = config.format_as;
     public templateTypes = config.templateTypes;
+    public ctrl_width = config.ctrl_width;
     constructor($scope, $injector) {
         super($scope, $injector);
         _.defaults(this.panel, {});

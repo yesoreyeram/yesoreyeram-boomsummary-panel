@@ -41,19 +41,9 @@
         </div>
         <div class="gr-form-inline" ng-if="ctrl.panel.enable_repeater === true">
           <div class="gf-form">
-            <label class="gf-form-label width-20">Repeat Width ( 1 to 12 ); 12 == 100%</label>
+            <label class="gf-form-label width-20">Repeat Width</label>
             <span class="mini-split"></span>
-            <input
-              type="text"
-              placeholder="Repeater width ( 1 to 12 ); 12 == 100%;"
-              class="gf-form-input width-12"
-              ng-model="ctrl.panel.repeater_width"
-              ng-blur="this.render()"
-              data-min-length="0"
-              data-items="100"
-              ng-model-onblur
-              data-placement="right"
-              data-ng-change="ctrl.render();" />
+            <select class="gf-form-input width-12" ng-model="ctrl.panel.repeater_width" ng-options="f.value as f.text for f in ctrl.ctrl_width" ng-change="ctrl.render()"></select>
             <span class="mini-split"></span>
             <label class="gf-form-label width-20">Margin Bottom in pixel</label>
             <span class="mini-split"></span>

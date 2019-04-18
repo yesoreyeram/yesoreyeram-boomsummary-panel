@@ -4,7 +4,7 @@
   "id": "yesoreyeram-boomsummary-panel",
   "dataFormats": ["table"],
   "info": {
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Boom Summary panel for Grafana",
     "author": {
       "name": "Sriramajeyam Sugumaran",

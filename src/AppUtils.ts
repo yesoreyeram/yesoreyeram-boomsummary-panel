@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { isMatch } from "./BoomUtils";
 
-export let didSatisfyFilters = function(group, filters) {
+export let didSatisfyFilters = function (group, filters) {
   if (filters && filters.length > 0) {
     let matches = 0;
     _.each(filters, filter => {
@@ -24,6 +24,14 @@ export let didSatisfyFilters = function(group, filters) {
   }
 };
 
-export let getFilteredDataFromMasterData = function(masterdata, filters) {
-  return masterdata.filter(group => didSatisfyFilters(group, filters));
+export let getFilteredDataFromMasterData = function (masterdata, filters) {
+  let colnames: any = [];
+  _.each(masterdata, group => {
+    _.each(group, item => {
+      colnames.push(item.colname);
+    });
+  });
+  colnames = _.uniq(colnames);
+  let validFilters = filters.filter(filter => colnames.indexOf(filter.field) > -1);
+  return masterdata.filter(group => didSatisfyFilters(group, validFilters));
 };

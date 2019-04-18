@@ -181,8 +181,8 @@ BoomSummaryGroup.prototype.removeStat = function (index: Number): void {
 
 BoomSummaryGroup.prototype.addFilter = function (): void {
     let newfilter = new BoomSummaryFilter({
-        field: "Sample",
-        operator: "equals"
+        field: "Sample Field",
+        operator: "notequals"
     });
     this.filters = this.filters || [];
     this.filters.push(newfilter);
@@ -244,6 +244,11 @@ BoomSummaryGroup.prototype.moveConditionalFormat = function (direction: string, 
 
 let replaceStatsFromTemplate = function (template, stats, data): string {
     let output = template;
+    if (data.length === 0) {
+        ["count", "random", "uniquecount", "mean", "sum", "min", "max","default"].forEach(statType => {
+            output = output.replace(new RegExp(`#{${statType}}`, "gi"), "No matching data");
+        });
+    }
     _.each(stats, (stat, index) => {
         let mystatsObject: IBoomStats = {
             count: NaN,

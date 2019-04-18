@@ -84,9 +84,11 @@ export class BoomFilter implements IBoomFilter {
 BoomFilter.prototype.GetValue1Helper = function () {
     return this.getSecondaryFieldDetails(this.operator).Value1Helper;
 };
+
 BoomFilter.prototype.GetValue2Helper = function () {
     return this.getSecondaryFieldDetails(this.operator).Value2Helper;
 };
+
 BoomFilter.prototype.CanShowValue2 = function () {
     return this.getSecondaryFieldDetails(this.operator).CanShowValue2;
 };

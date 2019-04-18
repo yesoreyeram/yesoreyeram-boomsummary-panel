@@ -1,9 +1,9 @@
 import _ from "lodash";
-import { IMasterData, IBoomFilter, IBoomSummaryConditionalFormats, IBoomStatsGroup } from "./../definitions/types";
-import { getFilteredDataFromMasterData } from "./../utils/AppUtils";
-import { getStatsFromArrayOfObjects, isMatch } from "./../utils/BoomUtils";
-import { getFormattedOutput } from "./../utils/GrafanaUtils";
-import { replaceTokens } from "../utils/BoomUtils";
+import { IMasterData, IBoomFilter, IBoomSummaryConditionalFormats, IBoomStatsGroup } from "./types";
+import { getFilteredDataFromMasterData } from "./AppUtils";
+import { getStatsFromArrayOfObjects, isMatch } from "./BoomUtils";
+import { getFormattedOutput } from "./GrafanaUtils";
+import { replaceTokens } from "./BoomUtils";
 
 export let buildMasterData = function (data) {
     let masterdata: IMasterData[][] = [];

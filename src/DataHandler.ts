@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { IMasterData } from "../definitions/types";
+import { IMasterData } from "./types";
 
 export let buildMasterData = function(data) {
   let masterdata: IMasterData[][] = [];

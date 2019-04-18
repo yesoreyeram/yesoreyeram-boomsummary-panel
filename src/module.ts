@@ -3,10 +3,10 @@
 import _ from "lodash";
 import { MetricsPanelCtrl, loadPluginCss } from "app/plugins/sdk";
 import kbn from "app/core/utils/kbn";
-import { BoomStatsGroup, BoomStat } from "./app/BoomStatsGroup";
-import { buildMasterData } from "./app/DataHandler";
-import { IBoomSummaryCtl } from "./definitions/types";
-import { config } from "./config";
+import { BoomStatsGroup, BoomStat } from "./BoomStatsGroup";
+import { buildMasterData } from "./DataHandler";
+import { IBoomSummaryCtl } from "./types";
+import { config } from "./Config";
 
 loadPluginCss(config.cssThemes);
 

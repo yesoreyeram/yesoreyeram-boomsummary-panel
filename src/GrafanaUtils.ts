@@ -1,4 +1,4 @@
-///<reference path="../../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
+///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
 
 import _ from "lodash";
 import kbn from "app/core/utils/kbn";

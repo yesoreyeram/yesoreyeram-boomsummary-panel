@@ -334,6 +334,7 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
         output = output.replace(new RegExp("#{max," + colname + ",title}", "gi"), `Max of ${colname}`);
         output = output.replace(new RegExp("#{first," + colname + ",title}", "gi"), `First ${colname}`);
     });
+    output = output.replace(new RegExp("#{count}", "gi"), data.length);
     return output;
 };
 
@@ -410,6 +411,9 @@ BoomSummaryGroup.prototype.getoutput = function (masterdata): string {
             default:
                 outTemplate = this.customTemplate;
                 break;
+        }        
+        if (this.templateType === "auto" && this.stats.length === 0) {
+            outTemplate = `<div style="background:red;">Oops. You don't have any stats defined for this summary group</div>`;
         }
         let matching_condition = getMatchingCondition(filteredData, this.conditional_formats);
         let bgColor = matching_condition && matching_condition.bgColor ? matching_condition.bgColor : this.bgColor;
@@ -421,6 +425,9 @@ BoomSummaryGroup.prototype.getoutput = function (masterdata): string {
         }
         let output_with_statsReplaced = replaceStatsFromTemplate(outTemplate, this.stats, filteredData);
         let output_with_tokensreplaced = replaceFATokens(output_with_statsReplaced);
+        if (output_with_tokensreplaced.trim().indexOf("<") !== 0) {
+            output_with_tokensreplaced = `${output_with_tokensreplaced.replace(new RegExp("\n", "gi"), "<br/>")}`;
+        }
         return `<div style="width:${this.statWidth || "100"}%;float:left;background:${bgColor};color:${textColor};" class="${custom_css_class}">
                     ${output_with_tokensreplaced}
                 </div>`;

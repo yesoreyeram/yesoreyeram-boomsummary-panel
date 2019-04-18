@@ -66,8 +66,7 @@ export let config = {
         { text: "uniquecount", value: "uniquecount" }
     ],
     templateTypes: [
-        { text: "Default Template", value: "default" },
-        { text: "Auto Stats", value: "auto" },
+        { text: "Auto Template", value: "auto" },
         { text: "Jumbo Stat", value: "jumbo" },
         { text: "Jumbo Stat without title", value: "jumbo_without_title" },
         { text: "Title only", value: "titleonly" },

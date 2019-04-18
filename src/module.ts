@@ -43,7 +43,7 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
             Object.setPrototypeOf(stats_group, BoomStatsGroup.prototype);
             stats_group.stats.map(stat => {
                 Object.setPrototypeOf(stat, BoomStat.prototype);
-            })
+            });
             return stats_group;
         });
     }
@@ -75,11 +75,10 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
     }
     public addStatsGroup(statgroupType): void {
         this.panel.stats_groups = this.panel.stats_groups || [];
-        var templateType = "auto";
+        let templateType = "auto";
         if (statgroupType && statgroupType.toUpperCase() === "JUMBO") {
             templateType = "jumbo";
-        }
-        else if (statgroupType && statgroupType.toUpperCase() === "JUMBO_WITHOUT_TITLE") {
+        } else if (statgroupType && statgroupType.toUpperCase() === "JUMBO_WITHOUT_TITLE") {
             templateType = "jumbo_without_title";
         }
         let stats: any[] = [];
@@ -92,11 +91,11 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
             }
         }
         this.panel.stats_groups.push(new BoomStatsGroup({
-            title: `Summary ${this.panel.stats_groups.length + 1}`,
             bgColor: "green",
-            templateType: templateType || "default",
+            stats,
+            templateType: templateType || "auto",
             textColor: "white",
-            stats
+            title: `Summary ${this.panel.stats_groups.length + 1}`
         }));
         this.activeStatIndex = this.panel.stats_groups.length - 1;
         this.render();
@@ -133,7 +132,9 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
 }
 
 BoomSummaryCtl.prototype.render = function () {
-    let output = `<div class="container-fluid"><div class="row">`;
+    let output = ``;
+    output += `<style>${this.ctrl.panel.custom_css || ""}</style>`;
+    output += `<div class="container-fluid"><div class="row">`;
     if (this.ctrl.panel.enable_repeater) {
         let cols = _.uniq(_.flatMap(this.masterdata).filter(t => t.colname === this.ctrl.panel.repeater_column).map(t => t.value));
         _.each(cols, col => {

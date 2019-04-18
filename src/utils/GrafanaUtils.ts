@@ -53,8 +53,7 @@ export const getDecimalsForValue = function (value, _decimals) {
 export let getFormattedOutput = function (value, format, decimals) {
   if (isNaN(value) || !value) {
     return value;
-  }
-  else {
+  } else {
     let decimalInfo: any = getDecimalsForValue(value, decimals || "0");
     let formatFunc = kbn.valueFormats[format || "none"];
     let value_formatted = formatFunc(

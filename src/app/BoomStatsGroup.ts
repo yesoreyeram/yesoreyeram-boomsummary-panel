@@ -101,13 +101,13 @@ export class BoomSummaryConditionalFormats extends BoomFilter implements IBoomFi
     public stat_type: string;
     public bgColor: string;
     public textColor: string;
-    public display_template: string;
+    public custom_css_class: string;
     constructor(options) {
         super(options);
+        this.custom_css_class = options.custom_css_class || "";
         this.stat_type = options.stat_type || "first";
         this.bgColor = options.bgColor || "";
         this.textColor = options.textColor || "";
-        this.display_template = options.display_template || "";
     }
 }
 
@@ -196,8 +196,8 @@ BoomStatsGroup.prototype.removeFilter = function (index: Number): void {
 
 BoomStatsGroup.prototype.addConditonalFormat = function (): void {
     let new_conditional_formatter = new BoomSummaryConditionalFormats({
-        stat_type: "first",
-        operator: "equals"
+        operator: "equals",
+        stat_type: "first"
     });
     this.conditional_formats = this.conditional_formats || [];
     this.conditional_formats.push(new_conditional_formatter);
@@ -291,7 +291,7 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
         }
         if (index === 0) {
             output = output.replace(new RegExp("#{title}", "gi"), `${colname}`);
-            output = output.replace(new RegExp("#{default}", "gi"), getFormattedOutput(mystatsObject["first"], "none", "0"));
+            output = output.replace(new RegExp("#{default}", "gi"), getFormattedOutput(mystatsObject.first, "none", "0"));
         }
         output = output.replace(new RegExp("#{count," + colname + "}", "gi"), mystatsObject.count);
         output = output.replace(new RegExp("#{uniquecount," + colname + "}", "gi"), mystatsObject.uniquecount);
@@ -344,9 +344,9 @@ let getMatchingCondition = function (data, conditional_formats) {
             mystatsObject = getStatsFromArrayOfObjects(mystats);
         }
         return isMatch(mystatsObject[condition.stat_type], condition.operator, condition.value, condition.value2);
-    })
+    });
     return matching_conditions && matching_conditions.length > 0 ? _.first(matching_conditions) : null;
-}
+};
 
 BoomStatsGroup.prototype.getoutput = function (masterdata): string {
     if (masterdata.length === 0) {
@@ -355,12 +355,6 @@ BoomStatsGroup.prototype.getoutput = function (masterdata): string {
         let filteredData = getFilteredDataFromMasterData(masterdata, this.filters);
         let outTemplate = filteredData.length + " records found";
         switch (this.templateType) {
-            case "default":
-                outTemplate = `<div style="width:100%;float:left;border:1px solid black;">
-                                    <div style="width:50%;float:left;padding:10px;">#{title}</div>
-                                    <div style="width:50%;float:left;padding:10px;">#{default}</div>
-                                </div>`;
-                break;
             case "titleonly":
                 outTemplate = `<div style="width:100%;float:left;border:1px solid black;">
                                     <div style="width:100%;float:left;padding:10px;text-align:center;">#{default}</div>
@@ -372,8 +366,8 @@ BoomStatsGroup.prototype.getoutput = function (masterdata): string {
                     outTemplate += `<div style="width:100%;float:left;border:1px solid black;">
                     <div style="width:50%;float:left;padding:10px;">#{${stat.stat_type},${stat.field},title}</div>
                     <div style="width:50%;float:left;padding:10px;">#{${stat.stat_type},${stat.field}}</div>
-                </div>`
-                })
+                </div>`;
+                });
                 break;
             case "custom":
                 outTemplate = this.customTemplate;
@@ -385,26 +379,30 @@ BoomStatsGroup.prototype.getoutput = function (masterdata): string {
                                     <br/>
                                     <h1>\#{default}</h1>
                                     <br/>
-                                </div>`
+                                </div>`;
                 break;
             case "jumbo_without_title":
                 outTemplate = `<div style="width:100%;float:left;text-align:center;border:1px solid black;">
                                     <br/>
                                     <h1>\#{default}</h1>
                                     <br/>
-                                </div>`
+                                </div>`;
                 break;
             default:
-                outTemplate = "<div>Auto Template</div>";
+                outTemplate = this.customTemplate;
                 break;
         }
         let matching_condition = getMatchingCondition(filteredData, this.conditional_formats);
         let bgColor = matching_condition && matching_condition.bgColor ? matching_condition.bgColor : this.bgColor;
         let textColor = matching_condition && matching_condition.textColor ? matching_condition.textColor : this.textColor;
-        let template = matching_condition && matching_condition.template ? matching_condition.template : outTemplate;
-        let output_with_statsReplaced = replaceStatsFromTemplate(template, this.stats, filteredData);
+        let custom_css_class = matching_condition && matching_condition.custom_css_class ? matching_condition.custom_css_class : "not_applicable";
+        if (custom_css_class !== "not_applicable") {
+            bgColor = "not_applicable";
+            textColor= "not_applicable";
+        }
+        let output_with_statsReplaced = replaceStatsFromTemplate(outTemplate, this.stats, filteredData);
         let output_with_tokensreplaced = replaceFATokens(output_with_statsReplaced);
-        return `<div style="width:${this.statWidth || "100"}%;float:left;background:${bgColor};color:${textColor};">
+        return `<div style="width:${this.statWidth || "100"}%;float:left;background:${bgColor};color:${textColor};" class="${custom_css_class}">
                     ${output_with_tokensreplaced}
                 </div>`;
     }

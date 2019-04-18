@@ -21,7 +21,7 @@ export interface IBoomFilter {
 export interface IBoomSummaryConditionalFormats {
     public bgColor: string;
     public textColor: string;
-    public display_template: string;
+    public custom_css_class: string;
 }
 export interface IBoomStatsGroup {
     public count: Number;

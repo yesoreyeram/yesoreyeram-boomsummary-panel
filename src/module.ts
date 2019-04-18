@@ -6,7 +6,7 @@ import kbn from "app/core/utils/kbn";
 import { BoomSummaryGroup, BoomStat } from "./BoomSummaryGroup";
 import { buildMasterData } from "./DataHandler";
 import { IBoomSummaryCtl } from "./types";
-import { config } from "./Config";
+import { config } from "./Settings";
 
 loadPluginCss(config.cssThemes);
 

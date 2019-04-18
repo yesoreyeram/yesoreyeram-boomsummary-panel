@@ -1,6 +1,6 @@
 {
   "name": "yesoreyeram-boomsummary-panel",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Boom summary panel for Grafana",
   "main": "dist/module.js",
   "scripts": {

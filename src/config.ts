@@ -29,6 +29,12 @@ export let config = {
         dark: `plugins/${plugin_id}/css/default.dark.css`,
         light: `plugins/${plugin_id}/css/default.light.css`
     },
+    ctrl_width: [
+        { text: "100%", value: "12" },
+        { text: "50%", value: "6" },
+        { text: "33%", value: "4" },
+        { text: "25%", value: "3" }
+    ],
     decimalValues: [
         { text: "0", value: "0" },
         { text: "1", value: "1" },
@@ -50,7 +56,7 @@ export let config = {
             title: "Panel Options"
         }
     ],
-    format_as : ["String","Number","Date"],
+    format_as: ["String", "Number", "Date"],
     grafana_events: {
         dataReceived: "data-received",
         initEditMode: "init-edit-mode"
@@ -71,11 +77,5 @@ export let config = {
         { text: "Jumbo Stat w/o title", value: "jumbo_without_title" },
         { text: "Value only", value: "titleonly" },
         { text: "Custom", value: "custom" },
-    ],
-    ctrl_width : [
-        { text: "100%", value : "12"},
-        { text: "50%", value : "6"},
-        { text: "33%", value : "4"},
-        { text: "25%", value : "3"}
     ]
 };

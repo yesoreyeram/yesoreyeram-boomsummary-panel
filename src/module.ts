@@ -86,8 +86,8 @@ class BoomSummaryCtl extends MetricsPanelCtrl implements IBoomSummaryCtl {
         if (this.masterdata && this.masterdata.length > 0) {
             if (this.masterdata[0].length > this.panel.stats_groups.length && this.masterdata[0][this.panel.stats_groups.length].colname) {
                 stats.push(new BoomStat({
-                    stat_type: "count",
                     field: this.masterdata[0][this.panel.stats_groups.length].colname,
+                    stat_type: "count",
                     title: "Total rows"
                 }));
             }

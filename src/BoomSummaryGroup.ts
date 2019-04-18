@@ -247,10 +247,10 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
     _.each(stats, (stat, index) => {
         let mystatsObject: IBoomStats = {
             count: NaN,
-            random: "",
             max: NaN,
             mean: NaN,
             min: NaN,
+            random: "",
             sum: NaN,
             uniquecount: NaN,
         };
@@ -289,10 +289,10 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
     _.each(colnames, (colname, index) => {
         let mystatsObject: IBoomStats = {
             count: NaN,
-            random: "",
             max: NaN,
             mean: NaN,
             min: NaN,
+            random: "",
             sum: NaN,
             uniquecount: NaN,
         };
@@ -344,10 +344,10 @@ let getMatchingCondition = function (data, conditional_formats) {
     let matching_conditions = conditional_formats.filter(condition => {
         let mystatsObject: IBoomStats = {
             count: NaN,
-            random: "",
             max: NaN,
             mean: NaN,
             min: NaN,
+            random: "",
             sum: NaN,
             uniquecount: NaN,
         };
@@ -370,7 +370,7 @@ BoomSummaryGroup.prototype.getoutput = function (masterdata): string {
     if (masterdata.length === 0) {
         return "<div style='text-align:center;'>No Data</div>";
     } else {
-        let filteredData = getFilteredDataFromMasterData(masterdata, this.filters);        
+        let filteredData = getFilteredDataFromMasterData(masterdata, this.filters);
         let matching_condition = getMatchingCondition(filteredData, this.conditional_formats);
         let bgColor = matching_condition && matching_condition.bgColor ? matching_condition.bgColor : this.bgColor;
         let textColor = matching_condition && matching_condition.textColor ? matching_condition.textColor : this.textColor;

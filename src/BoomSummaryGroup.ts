@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { IMasterData, IBoomFilter, IBoomSummaryConditionalFormats, IBoomSummaryGroup } from "./types";
+import { IMasterData, IBoomFilter, IBoomSummaryConditionalFormats, IBoomStats } from "./types";
 import { getFilteredDataFromMasterData } from "./AppUtils";
 import { getStatsFromArrayOfObjects, isMatch } from "./BoomUtils";
 import { getFormattedOutput } from "./GrafanaUtils";
@@ -247,7 +247,7 @@ BoomSummaryGroup.prototype.moveConditionalFormat = function (direction: string, 
 let replaceStatsFromTemplate = function (template, stats, data): string {
     let output = template;
     _.each(stats, (stat, index) => {
-        let mystatsObject: IBoomSummaryGroup = {
+        let mystatsObject: IBoomStats = {
             count: NaN,
             first: "",
             max: NaN,
@@ -289,7 +289,7 @@ let replaceStatsFromTemplate = function (template, stats, data): string {
     });
     colnames = _.uniq(colnames);
     _.each(colnames, (colname, index) => {
-        let mystatsObject: IBoomSummaryGroup = {
+        let mystatsObject: IBoomStats = {
             count: NaN,
             first: "",
             max: NaN,
@@ -343,7 +343,7 @@ let replaceFATokens = function (template): string {
 
 let getMatchingCondition = function (data, conditional_formats) {
     let matching_conditions = conditional_formats.filter(condition => {
-        let mystatsObject: IBoomSummaryGroup = {
+        let mystatsObject: IBoomStats = {
             count: NaN,
             first: "",
             max: NaN,

@@ -138,15 +138,17 @@ BoomSummaryCtl.prototype.render = function () {
     output += `<style>${this.ctrl.panel.custom_css || ""}</style>`;
     output += `<div class="container-fluid"><div class="row">`;
     if (this.ctrl.panel.enable_repeater) {
-        let cols = _.uniq(_.flatMap(this.masterdata).filter(t => t.colname === this.ctrl.panel.repeater_column).map(t => t.value));
-        _.each(cols, col => {
-            output += `<div class="col-md-${_.min([+(this.ctrl.panel.repeater_width), 12])}" style="margin-bottom:${this.ctrl.panel.repeater_margin_bottom || "20"}px;">`;
-            let mycoldata = this.masterdata.filter(t => t.filter(t1 => t1.value === col && t1.colname === this.ctrl.panel.repeater_column).length === 1);
-            _.each(this.ctrl.panel.stats_groups, stats_group => {
-                output += stats_group.getoutput(mycoldata);
+        if (this.ctrl.panel.stats_groups && this.ctrl.panel.stats_groups.length > 0) {
+            let cols = _.uniq(_.flatMap(this.masterdata).filter(t => t.colname === this.ctrl.panel.repeater_column).map(t => t.value));
+            _.each(cols, col => {
+                output += `<div class="col-md-${_.min([+(this.ctrl.panel.repeater_width), 12])}" style="margin-bottom:${this.ctrl.panel.repeater_margin_bottom || "20"}px;">`;
+                let mycoldata = this.masterdata.filter(t => t.filter(t1 => t1.value === col && t1.colname === this.ctrl.panel.repeater_column).length === 1);
+                _.each(this.ctrl.panel.stats_groups, stats_group => {
+                    output += stats_group.getoutput(mycoldata);
+                });
+                output += "</div>";
             });
-            output += "</div>";
-        });
+        }
     } else {
         output += `<div class="col-md-12">`;
         _.each(this.ctrl.panel.stats_groups, stats_group => {

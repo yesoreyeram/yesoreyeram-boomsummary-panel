@@ -1,7 +1,19 @@
 <div class="boomsummary-panel">
   <div id="boomsummary-editor-options">
     <div class="editor-row">
-      <div class="section gf-form-group">
+      <div class="section gf-form-group" ng-if="ctrl.masterdata.length === 0">
+        <div class="gr-form-inline">
+          <div class="gf-form">
+            <h6 class="text-header">Repeater / Group By options</h6>
+          </div>
+        </div>
+        <div class="gr-form-inline">
+          <div class="gf-form" style="text-align:center;padding-top:30px;">
+            You don't have any metrics to use this option. Please check your queries / refresh metrics.
+          </div>
+        </div>
+      </div>
+      <div class="section gf-form-group" ng-if="ctrl.masterdata.length > 0">
         <div class="gr-form-inline">
           <div class="gf-form">
             <h6 class="text-header">Repeater / Group By options</h6>
